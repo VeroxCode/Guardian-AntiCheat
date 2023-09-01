@@ -1,0 +1,16 @@
+name: Guardian
+version: 1.0.0
+api: 5.0.0
+main: veroxcode\Guardian
+author: VeroxCode
+
+commands:
+  test:
+    description: Just a Test
+    permission: test.perms
+    usage: /<test> args
+
+permissions:
+  test.perms:
+    description: Test Permission
+    default: op
