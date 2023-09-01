@@ -26,7 +26,7 @@ class Guardian extends PluginBase implements \pocketmine\event\Listener
         $this->saveDefaultConfig();
         $this->getResource("config.yml");
 
-        $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
+        $this->getServer()->getPluginManager()->registerEvents(new EventListener(), $this);
 
         $this->userManager = new UserManager();
         $this->checkManager = new CheckManager();
