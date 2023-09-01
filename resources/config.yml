@@ -1,3 +1,2 @@
-# Reach Check
-maximum_reach: 3.6
-punishment: "FLAG"
+# Debug
+enable-debug: false

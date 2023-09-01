@@ -15,6 +15,11 @@ class Notifier
      */
     public static function NotifyFlag(string $name, string $Check, int $Violation) : void
     {
+
+        if (!Guardian::getInstance()->getConfig()->get("enable-debug")){
+            return;
+        }
+
         foreach (Guardian::getInstance()->getServer()->getOnlinePlayers() as $player){
             $player->sendMessage("§e[Guardian] §c" . $name . "§f failed §a" . $Check . " §a[§4" . $Violation . "§a]");
         }
