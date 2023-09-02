@@ -30,7 +30,6 @@ class UserManager
         }
 
         $this->Users[$uuid] = $user;
-        Guardian::getInstance()->getLogger()->info("Registered User");
     }
 
     /**
@@ -40,7 +39,6 @@ class UserManager
     public function unregisterUser(string $uuid) : void
     {
         if (isset($this->Users[$uuid])){
-            Guardian::getInstance()->getLogger()->info("Removed User");
             unset($this->Users[$uuid]);
         }
     }

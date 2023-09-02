@@ -19,7 +19,6 @@ class Guardian extends PluginBase implements \pocketmine\event\Listener
     public UserManager $userManager;
     public CheckManager $checkManager;
 
-
     public function onEnable() : void
     {
         self::$instance = $this;
@@ -27,6 +26,10 @@ class Guardian extends PluginBase implements \pocketmine\event\Listener
         @mkdir($this->getDataFolder());
         $this->saveDefaultConfig();
         $this->getResource("config.yml");
+
+        if ($this->getConfig()->get("config-version") == null || $this->getConfig()->get("config-version") != Constants::CONFIG_VERSION){
+            $this->getLogger()->warning(Constants::PREFIX . "Config Outdated! Proceed on ur own Risk.");
+        }
 
         $this->getServer()->getPluginManager()->registerEvents(new EventListener(), $this);
 

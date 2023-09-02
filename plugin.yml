@@ -14,3 +14,6 @@ permissions:
   guardian.admin:
     description: Admin Permissions
     default: op
+  guardian.notify:
+    description: Notify everyone if a Player fails a Check
+    default: op

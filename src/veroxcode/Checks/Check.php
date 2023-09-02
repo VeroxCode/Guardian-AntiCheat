@@ -22,15 +22,14 @@ class Check
 
     /**
      * @param string $name
-     * @param int $maxViolations
      */
-    public function __construct(string $name, int $maxViolations)
+    public function __construct(string $name)
     {
         $this->name = $name;
-        $this->maxViolations = $maxViolations;
 
         $config = Guardian::getInstance()->getConfig();
-        $this->notify = $config->get($name . "-notify");
+        $this->maxViolations = $config->get($name . "-MaxViolations") == 0 ? false : $config->get($name . "-MaxViolations");
+        $this->notify = $config->get($name . "-notify") == null ? false : $config->get($name . "-notify");
     }
 
     public function onJoin(PlayerJoinEvent $event, User $user) : void {}

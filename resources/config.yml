@@ -1,4 +1,27 @@
-# Debug
+##USEFUL INFORMATION
+##MaxViolation: Amount of Times a Player has to fail a Check before he gets punished
+##Available Punishments: Cancel, Kick, Ban
+##Combat Checks can not have a different Punishment
+
+#Debug
+
 enable-debug: false
+config-version: "1.0.0"
+
+#Reach
+
 Reach-notify: true
+Maximum-Reach: 3.6
+Reach-MaxViolations: 3
+
+#Hitbox
+
 Hitbox-notify: true
+Hitbox-MaxViolations: 3
+
+#Timer
+
+Timer-notify: true
+Timer-MaxViolations: 3
+Timer-Punishment: "Kick"
+Timer-TickDifference: 15

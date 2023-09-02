@@ -15,9 +15,15 @@ use veroxcode\Utils\Raycast;
 class Reach extends Check
 {
 
+    private float $MAX_REACH;
+
     public function __construct()
     {
-        parent::__construct("Reach", 3);
+        parent::__construct("Reach");
+
+        $config = Guardian::getInstance()->getConfig();
+        $this->MAX_REACH = $config->get("Maximum-Reach") == null ? Constants::ATTACK_REACH : $config->get("Maximum-Reach");
+
     }
 
     public function onAttack(EntityDamageByEntityEvent $event, User $user): void
@@ -42,7 +48,7 @@ class Reach extends Check
             $victimVec = new Vector3($rewindBuffer->getPosition()->getX(), 0 , $rewindBuffer->getPosition()->getZ());
             $distance = $playerVec->distance($victimVec);
 
-            if ($distance > Constants::ATTACK_REACH) {
+            if ($distance > $this->MAX_REACH) {
                 if ($user->getViolation($this->getName()) < $this->getMaxViolations()){
                     $user->increaseViolation($this->getName(), 2);
                 }
