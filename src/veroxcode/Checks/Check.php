@@ -6,6 +6,8 @@ use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\network\mcpe\protocol\PlayerAuthInputPacket;
+use pocketmine\player\Player;
+use veroxcode\Guardian;
 use veroxcode\User\User;
 
 class Check
@@ -15,6 +17,8 @@ class Check
     private string $name;
     /*** @var int */
     private int $maxViolations;
+    /*** @var bool */
+    private bool $notify;
 
     /**
      * @param string $name
@@ -24,11 +28,14 @@ class Check
     {
         $this->name = $name;
         $this->maxViolations = $maxViolations;
+
+        $config = Guardian::getInstance()->getConfig();
+        $this->notify = $config->get($name . "-notify");
     }
 
     public function onJoin(PlayerJoinEvent $event, User $user) : void {}
     public function onAttack(EntityDamageByEntityEvent $event, User $user) : void {}
-    public function onMove(PlayerAuthInputPacket $packet, User $user) : void {}
+    public function onMove(Player $player, PlayerAuthInputPacket $packet, User $user) : void {}
 
     /**
      * @return int
@@ -44,6 +51,22 @@ class Check
     public function getName(): string
     {
         return $this->name;
+    }
+
+    /**
+     * @param bool $notify
+     */
+    public function setNotify(bool $notify): void
+    {
+        $this->notify = $notify;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasNotify(): bool
+    {
+        return $this->notify;
     }
 
 }

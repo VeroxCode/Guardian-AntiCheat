@@ -14,6 +14,10 @@ class User
 
     private string $uuid;
 
+    private int $firstServerTick = 0;
+    private int $firstClientTick = 0;
+    private int $tickDelay = 0;
+
     private array $movementBuffer = [];
     private array $violations = [];
 
@@ -73,6 +77,36 @@ class User
     public function getViolation(string $Check) : int
     {
         return $this->violations[$Check];
+    }
+
+    public function getFirstServerTick(): int
+    {
+        return $this->firstServerTick;
+    }
+
+    public function setFirstServerTick(int $firstServerTick): void
+    {
+        $this->firstServerTick = $firstServerTick;
+    }
+
+    public function getFirstClientTick(): int
+    {
+        return $this->firstClientTick;
+    }
+
+    public function setFirstClientTick(int $firstClientTick): void
+    {
+        $this->firstClientTick = $firstClientTick;
+    }
+
+    public function getTickDelay(): int
+    {
+        return $this->tickDelay;
+    }
+
+    public function setTickDelay(int $tickDelay): void
+    {
+        $this->tickDelay = $tickDelay;
     }
 
 

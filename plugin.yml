@@ -5,12 +5,12 @@ main: veroxcode\Guardian
 author: VeroxCode
 
 commands:
-  test:
-    description: Just a Test
-    permission: test.perms
-    usage: /<test> args
+  guardian:
+    description: Guardian Commands
+    permission: guardian.admin
+    usage: /<guardian> help
 
 permissions:
-  test.perms:
-    description: Test Permission
+  guardian.admin:
+    description: Admin Permissions
     default: op

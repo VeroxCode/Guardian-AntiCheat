@@ -50,7 +50,7 @@ class Hitbox extends Check
             }
 
             if ($user->getViolation($this->getName()) >= $this->getMaxViolations()){
-                Notifier::NotifyFlag($player->getName(), $this->getName(), $user->getViolation($this->getName()));
+                Notifier::NotifyFlag($player->getName(), $this->getName(), $user->getViolation($this->getName()), $this->hasNotify());
                 $event->cancel();
             }
         }

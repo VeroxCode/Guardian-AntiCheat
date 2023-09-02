@@ -8,6 +8,7 @@ use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\math\Vector2;
+use pocketmine\network\mcpe\protocol\LoginPacket;
 use pocketmine\network\mcpe\protocol\PlayerAuthInputPacket;
 use pocketmine\player\Player;
 use veroxcode\Buffers\MovementFrame;
@@ -45,8 +46,14 @@ class EventListener implements Listener
             );
             Guardian::getInstance()->getUserManager()->getUser($uuid)->addToMovementBuffer($NewBuffer);
 
+            if ($user->getFirstClientTick() == 0 && $user->getFirstServerTick() == 0){
+                $user->setFirstServerTick($this->getServerTick());
+                $user->setFirstClientTick($packet->getTick());
+                $user->setTickDelay($this->getServerTick() - $packet->getTick());
+            }
+
             foreach (Guardian::getInstance()->getCheckManager()->getChecks() as $Check){
-                $Check->onMove($packet, $user);
+                $Check->onMove($player, $packet, $user);
             }
 
         }

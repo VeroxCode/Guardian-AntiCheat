@@ -1,2 +1,4 @@
 # Debug
 enable-debug: false
+Reach-notify: true
+Hitbox-notify: true
