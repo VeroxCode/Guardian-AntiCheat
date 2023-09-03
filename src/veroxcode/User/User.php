@@ -2,6 +2,7 @@
 
 namespace veroxcode\User;
 
+use pocketmine\network\mcpe\protocol\types\InputMode;
 use veroxcode\Buffers\MovementFrame;
 use veroxcode\Guardian;
 use veroxcode\Utils\Arrays;
@@ -17,6 +18,7 @@ class User
     private int $firstServerTick = 0;
     private int $firstClientTick = 0;
     private int $tickDelay = 0;
+    private int $input = 0;
 
     private array $movementBuffer = [];
     private array $violations = [];
@@ -107,6 +109,16 @@ class User
     public function setTickDelay(int $tickDelay): void
     {
         $this->tickDelay = $tickDelay;
+    }
+
+    public function getInput(): int
+    {
+        return $this->input;
+    }
+
+    public function setInput(int $input): void
+    {
+        $this->input = $input;
     }
 
 
