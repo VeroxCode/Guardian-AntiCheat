@@ -7,10 +7,12 @@ use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
+use pocketmine\event\server\DataPacketSendEvent;
 use pocketmine\math\Vector2;
 use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
 use pocketmine\network\mcpe\protocol\LoginPacket;
 use pocketmine\network\mcpe\protocol\PlayerAuthInputPacket;
+use pocketmine\network\mcpe\protocol\SetActorMotionPacket;
 use pocketmine\network\mcpe\protocol\types\inventory\UseItemOnEntityTransactionData;
 use pocketmine\player\Player;
 use veroxcode\Buffers\AttackFrame;
@@ -53,6 +55,11 @@ class EventListener implements Listener
         }
 
         if ($packet instanceof PlayerAuthInputPacket){
+
+            foreach (Guardian::getInstance()->getCheckManager()->getChecks() as $Check){
+                $Check->onMove($player, $packet, $user);
+            }
+
             $NewBuffer = new MovementFrame(
                 $this->getServerTick(),
                 $packet->getTick(),
@@ -71,10 +78,6 @@ class EventListener implements Listener
 
             if ($user->getInput() == 0){
                 $user->setInput($packet->getInputMode());
-            }
-
-            foreach (Guardian::getInstance()->getCheckManager()->getChecks() as $Check){
-                $Check->onMove($player, $packet, $user);
             }
 
         }

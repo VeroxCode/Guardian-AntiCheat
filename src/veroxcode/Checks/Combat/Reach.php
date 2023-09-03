@@ -37,7 +37,7 @@ class Reach extends Check
             $victimUser = Guardian::getInstance()->getUserManager()->getUser($victimUUID);
 
             $ping = $player->getNetworkSession()->getPing();
-            $rewindTicks = ceil($ping / 50) + 1;
+            $rewindTicks = ceil($ping / 50);
 
             if (count($victimUser->getMovementBuffer()) <= $rewindTicks || count($user->getMovementBuffer()) <= $rewindTicks){
                 return;

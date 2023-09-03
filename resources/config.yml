@@ -38,5 +38,12 @@ Timer-TickDifference: 15
 
 AutoClicker-notify: true
 AutoClicker-MaxViolations: 3
-AutoClicker-AlertFrequency: 10
+AutoClicker-AlertFrequency: 25
 CPS-Limit: 15
+
+#BadPacketsA
+
+BadPacketsA-notify: true
+BadPacketsA-MaxViolations: 5
+BadPacketsA-AlertFrequency: 10
+BadPacketsA-Punishment: "Kick"
