@@ -12,6 +12,7 @@ class Notifier
      * @param string $name
      * @param string $Check
      * @param int $Violation
+     * @param bool $notify
      * @return void
      */
     public static function NotifyFlag(string $name, string $Check, int $Violation, bool $notify) : void
@@ -39,6 +40,11 @@ class Notifier
         }
     }
 
+    /**
+     * @param string $name
+     * @param string $Check
+     * @return void
+     */
     public static function NotifyPlayers(string $name, string $Check) : void
     {
 

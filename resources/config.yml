@@ -30,3 +30,9 @@ Timer-notify: true
 Timer-MaxViolations: 3
 Timer-Punishment: "Kick"
 Timer-TickDifference: 15
+
+#AutoClicker
+
+AutoClicker-notify: true
+CPS-Limit: 15
+AutoClicker-MaxViolations: 3

@@ -8,9 +8,12 @@ use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\math\Vector2;
+use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
 use pocketmine\network\mcpe\protocol\LoginPacket;
 use pocketmine\network\mcpe\protocol\PlayerAuthInputPacket;
+use pocketmine\network\mcpe\protocol\types\inventory\UseItemOnEntityTransactionData;
 use pocketmine\player\Player;
+use veroxcode\Buffers\AttackFrame;
 use veroxcode\Buffers\MovementFrame;
 use veroxcode\Checks\Check;
 use veroxcode\Guardian;
@@ -34,6 +37,20 @@ class EventListener implements Listener
 
         $uuid = $player->getUniqueId()->toString();
         $user = Guardian::getInstance()->getUserManager()->getUser($uuid);
+
+        if ($packet instanceof InventoryTransactionPacket){
+            $data = $packet->trData;
+
+            if ($data instanceof UseItemOnEntityTransactionData){
+                $NewBuffer = new AttackFrame(
+                    $this->getServerTick(),
+                    $player->getNetworkSession()->getPing(),
+                    $user->getLastAttack()
+                );
+                Guardian::getInstance()->getUserManager()->getUser($uuid)->addToAttackBuffer($NewBuffer);
+            }
+
+        }
 
         if ($packet instanceof PlayerAuthInputPacket){
             $NewBuffer = new MovementFrame(
@@ -73,6 +90,7 @@ class EventListener implements Listener
             foreach (Guardian::getInstance()->getCheckManager()->getChecks() as $Check){
                 $Check->onAttack($event, $user);
             }
+            $user->setLastAttack(microtime(true) * 1000);
         }
 
     }

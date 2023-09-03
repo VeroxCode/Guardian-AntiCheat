@@ -2,6 +2,7 @@
 
 namespace veroxcode\Checks;
 
+use veroxcode\Checks\Combat\AutoClicker;
 use veroxcode\Checks\Combat\Hitbox;
 use veroxcode\Checks\Combat\Reach;
 use veroxcode\Checks\Movement\Timer;
@@ -19,6 +20,7 @@ class CheckManager
         $this->Checks[] = new Reach();
         $this->Checks[] = new Hitbox();
         $this->Checks[] = new Timer();
+        $this->Checks[] = new AutoClicker();
     }
 
     /**
