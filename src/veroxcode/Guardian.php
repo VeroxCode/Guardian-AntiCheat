@@ -5,6 +5,7 @@ namespace veroxcode;
 use JsonException;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
+use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 use veroxcode\Checks\CheckManager;
 use veroxcode\Listener\EventListener;
@@ -49,13 +50,17 @@ class Guardian extends PluginBase implements \pocketmine\event\Listener
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool
    {
 
+       $config = $this->getConfig();
+       $prefix = $config->get("prefix");
+
        if ($command->getName() == "guardian") {
            if (isset($args[0])) {
                if ($args[0] == "help"){
                    $sender->sendMessage(
-                       Constants::PREFIX . "help.\n"
-                       .   Constants::PREFIX . "debug.\n"
-                       .   Constants::PREFIX . "notify <Check>.");
+                       $prefix . "§f help §8- Lists all Commands\n"
+                       .   $prefix . "§f debug §8- Enable/Disable Debug Mode\n"
+                       .   $prefix . "§f notifications §8- Enable/Disable Notifications for yourself\n"
+                       .   $prefix . "§f notify <Check> §8- Enable/Disable Notifications for certain Checks");
                        $this->getConfig()->save();
                        return true;
                    }
@@ -63,7 +68,7 @@ class Guardian extends PluginBase implements \pocketmine\event\Listener
                if ($args[0] == "debug"){
                    $debug = $this->getConfig()->get("enable-debug");
                    $this->getConfig()->set("enable-debug", !$debug);
-                   $sender->sendMessage(Constants::PREFIX . "Done.");
+                   $sender->sendMessage($prefix . " §8Done.");
                    $this->getConfig()->save();
                    return true;
                }
@@ -77,10 +82,21 @@ class Guardian extends PluginBase implements \pocketmine\event\Listener
                    if ($this->getCheckManager()->getCheckByName($args[1]) != null){
                        $this->getCheckManager()->getCheckByName($args[1])->setNotify(!$newnotify);
                        $this->getConfig()->set($args[1] . "-notify", !$newnotify);
-                       $sender->sendMessage(Constants::PREFIX . "Done.");
+                       $sender->sendMessage($prefix . " §8Done.");
                        $this->getConfig()->save();
                        return true;
                    }
+               }
+
+               if ($args[0] == "notifications"){
+                    if ($sender instanceof Player){
+                        $uuid = $sender->getUniqueId()->toString();
+                        $user = $this->getUserManager()->getUser($uuid);
+                        $notifications = $user->hasNotifications();
+                        $user->setNotifications(!$notifications);
+                        $sender->sendMessage($prefix . " §8Done.");
+                        return true;
+                    }
                }
            }
        }

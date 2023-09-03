@@ -33,7 +33,7 @@ class Timer extends Check
             if ($user->getViolation($this->getName()) < $this->getMaxViolations()){
                 $user->increaseViolation($this->getName(), 1);
             }else{
-                Notifier::NotifyFlag($player->getName(), $this->getName(), $user->getViolation($this->getName()), $this->hasNotify());
+                Notifier::NotifyFlag($player->getName(), $user, $this, $user->getViolation($this->getName()), $this->hasNotify());
                 Punishments::punishPlayer($player, $this, $user, $player->getPosition(), Guardian::getInstance()->getConfig()->get($this->getName() . "-Punishment"));
                 $user->setTickDelay($newTickDelay);
             }
