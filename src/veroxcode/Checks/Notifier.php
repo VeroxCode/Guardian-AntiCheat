@@ -18,7 +18,9 @@ class Notifier
     public static function NotifyFlag(string $name, string $Check, int $Violation, bool $notify) : void
     {
         if (!Guardian::getInstance()->getConfig()->get("enable-debug") || !$notify){
-            self::NotifyPlayers($name, $Check);
+            if ($notify){
+                self::NotifyPlayers($name, $Check);
+            }
             return;
         }
 
