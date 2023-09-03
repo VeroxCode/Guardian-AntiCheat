@@ -7,6 +7,7 @@
 - [X] Reach
 - [X] Hitbox
 - [X] Timer
+- [X] AutoClicker/CPS
 
 ### Checks & Features to be made:
 
