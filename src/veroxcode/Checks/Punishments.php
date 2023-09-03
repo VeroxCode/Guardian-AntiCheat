@@ -42,15 +42,30 @@ class Punishments
 
     public static function KickUser(Player $player): void
     {
-      $player->kick(Constants::PREFIX . "You have been Kicked for Cheating!");
+        $config = Guardian::getInstance()->getConfig();
+        $message = $config->get("kick-message");
+        $prefix = $config->get("prefix");
+
+        $msgPrefixPos = strpos($message, "%PREFIX%");
+        $message = substr_replace($message, $prefix, $msgPrefixPos, 8);
+
+        $player->kick($message);
     }
 
     public static function BanUser(Player $player): void
     {
+
+        $config = Guardian::getInstance()->getConfig();
+        $message = $config->get("ban-message");
+        $prefix = $config->get("prefix");
+
+        $msgPrefixPos = strpos($message, "%PREFIX%");
+        $message = substr_replace($message, $prefix, $msgPrefixPos, 8);
+
         $Ban = new BanEntry($player->getName());
-        $Ban->setReason(Constants::PREFIX . "You have been Banned for Cheating!");
+        $Ban->setReason($message);
         Guardian::getInstance()->getServer()->getNameBans()->add($Ban);
-        $player->kick(Constants::PREFIX . "You have been Banned for Cheating!");
+        $player->kick($message);
     }
 
 }
