@@ -8,6 +8,7 @@
 - [X] Hitbox
 - [X] Timer
 - [X] AutoClicker/CPS
+- [X] BadPackets
 
 ### Checks & Features to be made:
 
@@ -15,6 +16,4 @@
 - [ ] Gravity Simulation
 - [ ] BedBreaker/Bedfucker
 - [ ] Tower
-- [ ] NoKnockback
-- [ ] BadPackets
-      
+- [ ] NoKnockback      
