@@ -16,4 +16,6 @@
 - [ ] Movement Prediction/Simulation
 - [ ] Gravity Simulation
 - [ ] Tower
-- [ ] NoKnockback      
+- [ ] NoKnockback
+- [ ] FastEat
+- [ ] Instant Rotations/Killaura     
