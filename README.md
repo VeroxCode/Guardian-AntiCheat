@@ -9,11 +9,11 @@
 - [X] Timer
 - [X] AutoClicker/CPS
 - [X] BadPackets
+- [X] BedBreaker/Bedfucker
 
 ### Checks & Features to be made:
 
 - [ ] Movement Prediction/Simulation
 - [ ] Gravity Simulation
-- [ ] BedBreaker/Bedfucker
 - [ ] Tower
 - [ ] NoKnockback      
