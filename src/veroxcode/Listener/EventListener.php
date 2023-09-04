@@ -2,6 +2,7 @@
 
 namespace veroxcode\Listener;
 
+use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
@@ -28,7 +29,7 @@ class EventListener implements Listener
      * @param DataPacketReceiveEvent $event
      * @return void
      */
-    public function onPacketReceive(DataPacketReceiveEvent $event) : void
+    public function onPacketReceive(DataPacketReceiveEvent $event): void
     {
         $packet = $event->getPacket();
         $player = $event->getOrigin()->getPlayer();
@@ -84,7 +85,7 @@ class EventListener implements Listener
 
     }
 
-    public function onAttack(EntityDamageByEntityEvent $event) : void
+    public function onAttack(EntityDamageByEntityEvent $event): void
     {
         $damager = $event->getDamager();
 
@@ -96,6 +97,16 @@ class EventListener implements Listener
             $user->setLastAttack(microtime(true) * 1000);
         }
 
+    }
+
+    public function onBlockBreak(BlockBreakEvent $event): void
+    {
+        $player = $event->getPlayer();
+        $user = Guardian::getInstance()->getUserManager()->getUser($player->getUniqueId()->toString());
+
+        foreach (Guardian::getInstance()->getCheckManager()->getChecks() as $Check){
+            $Check->onBlockBreak($event, $user);
+        }
     }
 
     /**

@@ -7,6 +7,7 @@ use veroxcode\Checks\Combat\Hitbox;
 use veroxcode\Checks\Combat\Reach;
 use veroxcode\Checks\Movement\Timer;
 use veroxcode\Checks\Packets\BadPacketsA;
+use veroxcode\Checks\World\GhostHand;
 
 class CheckManager
 {
@@ -23,6 +24,7 @@ class CheckManager
         $this->Checks[] = new Timer();
         $this->Checks[] = new AutoClicker();
         $this->Checks[] = new BadPacketsA();
+        $this->Checks[] = new GhostHand();
     }
 
     /**

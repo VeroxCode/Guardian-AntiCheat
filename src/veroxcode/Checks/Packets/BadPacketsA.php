@@ -26,7 +26,7 @@ class BadPacketsA extends Check
                     $user->increaseViolation($this->getName());
                 }else{
                     Notifier::NotifyFlag($player->getName(), $user, $this, $user->getViolation($this->getName()), $this->hasNotify());
-                    Punishments::punishPlayer($player, $this, $user, $player->getPosition(), Guardian::getInstance()->getConfig()->get($this->getName() . "-Punishment"));
+                    Punishments::punishPlayer($player, $this, $user, $player->getPosition(), $this->getPunishment());
                 }
             }
         }
