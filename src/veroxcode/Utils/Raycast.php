@@ -38,7 +38,7 @@ class Raycast
             return false;
         }
 
-        if($rayVec->y <= ($boundingBox->minY - 0.4) or $rayVec->y >= ($boundingBox->maxY + 0.4)){
+        if($rayVec->y <= ($boundingBox->minY - 0.5) or $rayVec->y >= ($boundingBox->maxY + 0.5)){
             return false;
         }
 

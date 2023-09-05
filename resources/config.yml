@@ -6,7 +6,7 @@
 #Debug
 
 enable-debug: false
-config-version: "1.0.4"
+config-version: "1.0.5"
 prefix: "§f[§eGuardian§f]"
 alert-message-debug: "%PREFIX% §c%PLAYER%§f failed §a%CHECK%§a [§4%VIOLATION%§a]"
 alert-message: "%PREFIX% §c%PLAYER%§f is using §a%CHECK%"
@@ -47,6 +47,12 @@ BadPacketsA-notify: true
 BadPacketsA-MaxViolations: 5
 BadPacketsA-AlertFrequency: 10
 BadPacketsA-Punishment: "Kick"
+
+#ImpossibleRotations
+
+ImpossibleRotations-notify: true
+ImpossibleRotations-MaxViolations: 8
+ImpossibleRotations-AlertFrequency: 20
 
 #GhostHand
 

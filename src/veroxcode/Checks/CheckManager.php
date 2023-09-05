@@ -4,6 +4,7 @@ namespace veroxcode\Checks;
 
 use veroxcode\Checks\Combat\AutoClicker;
 use veroxcode\Checks\Combat\Hitbox;
+use veroxcode\Checks\Combat\ImpossibleRotations;
 use veroxcode\Checks\Combat\Reach;
 use veroxcode\Checks\Movement\Timer;
 use veroxcode\Checks\Packets\BadPacketsA;
@@ -25,6 +26,7 @@ class CheckManager
         $this->Checks[] = new AutoClicker();
         $this->Checks[] = new BadPacketsA();
         $this->Checks[] = new GhostHand();
+        $this->Checks[] = new ImpossibleRotations();
     }
 
     /**

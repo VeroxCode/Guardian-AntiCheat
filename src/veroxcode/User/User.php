@@ -2,6 +2,7 @@
 
 namespace veroxcode\User;
 
+use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\types\InputMode;
 use veroxcode\Buffers\AttackFrame;
 use veroxcode\Buffers\MovementFrame;
@@ -15,16 +16,22 @@ class User
     private CONST MOVEMENT_BUFFER_SIZE = 100;
     private CONST ATTACK_BUFFER_SIZE = 100;
 
+    private Vector3 $motion;
+
     private string $uuid;
 
     private bool $notifications = true;
+    private bool $punishNext = false;
 
+    private float $moveForward = 0.0;
+    private float $moveStrafe = 0.0;
+
+    private int $lastKnockbackTick = 0;
     private int $firstServerTick = 0;
     private int $firstClientTick = 0;
+    private int $lastAttack = 0;
     private int $tickDelay = 0;
     private int $input = 0;
-
-    private float $lastAttack = 0;
 
     private array $movementBuffer = [];
     private array $attackBuffer = [];
@@ -37,6 +44,7 @@ class User
     public function __construct(string $uuid)
     {
         $this->uuid = $uuid;
+        $this->motion = Vector3::zero();
         $config = Guardian::getInstance()->getConfig();
 
         foreach (Guardian::getInstance()->getCheckManager()->getChecks() as $Check){
@@ -175,12 +183,12 @@ class User
         $this->input = $input;
     }
 
-    public function getLastAttack(): float
+    public function getLastAttack(): int
     {
         return $this->lastAttack;
     }
 
-    public function setLastAttack(float $lastAttack): void
+    public function setLastAttack(int $lastAttack): void
     {
         $this->lastAttack = $lastAttack;
     }
@@ -193,6 +201,56 @@ class User
     public function setNotifications(bool $notifications): void
     {
         $this->notifications = $notifications;
+    }
+
+    public function getLastKnockbackTick(): int
+    {
+        return $this->lastKnockbackTick;
+    }
+
+    public function setLastKnockbackTick(int $lastKnockbackTick): void
+    {
+        $this->lastKnockbackTick = $lastKnockbackTick;
+    }
+
+    public function getMotion(): Vector3
+    {
+        return $this->motion;
+    }
+
+    public function setMotion(Vector3 $motion): void
+    {
+        $this->motion = $motion;
+    }
+
+    public function getMoveForward(): float
+    {
+        return $this->moveForward;
+    }
+
+    public function setMoveForward(float $moveForward): void
+    {
+        $this->moveForward = $moveForward;
+    }
+
+    public function getMoveStrafe(): float
+    {
+        return $this->moveStrafe;
+    }
+
+    public function setMoveStrafe(float $moveStrafe): void
+    {
+        $this->moveStrafe = $moveStrafe;
+    }
+
+    public function isPunishNext(): bool
+    {
+        return $this->punishNext;
+    }
+
+    public function setPunishNext(bool $punishNext): void
+    {
+        $this->punishNext = $punishNext;
     }
 
 

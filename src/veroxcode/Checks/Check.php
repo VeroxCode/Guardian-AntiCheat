@@ -4,6 +4,7 @@ namespace veroxcode\Checks;
 
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\event\entity\EntityMotionEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\network\mcpe\protocol\PlayerAuthInputPacket;
@@ -39,6 +40,7 @@ class Check
     public function onJoin(PlayerJoinEvent $event, User $user) : void {}
     public function onAttack(EntityDamageByEntityEvent $event, User $user) : void {}
     public function onMove(Player $player, PlayerAuthInputPacket $packet, User $user) : void {}
+    public function onMotion(EntityMotionEvent $event, User $user) : void {}
     public function onBlockBreak(BlockBreakEvent $event, User $user) : void {}
 
     /**
