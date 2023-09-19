@@ -17,6 +17,7 @@ class User
     private CONST ATTACK_BUFFER_SIZE = 100;
 
     private Vector3 $motion;
+    private Vector3 $lastPosition;
 
     private string $uuid;
 
@@ -252,6 +253,5 @@ class User
     {
         $this->punishNext = $punishNext;
     }
-
 
 }

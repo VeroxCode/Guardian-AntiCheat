@@ -43,6 +43,10 @@ class EventListener implements Listener
         $uuid = $player->getUniqueId()->toString();
         $user = Guardian::getInstance()->getUserManager()->getUser($uuid);
 
+        if ($user == null){
+            return;
+        }
+
         if ($packet instanceof InventoryTransactionPacket){
             $data = $packet->trData;
 

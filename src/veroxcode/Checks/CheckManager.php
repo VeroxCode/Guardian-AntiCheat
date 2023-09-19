@@ -6,6 +6,7 @@ use veroxcode\Checks\Combat\AutoClicker;
 use veroxcode\Checks\Combat\Hitbox;
 use veroxcode\Checks\Combat\ImpossibleRotations;
 use veroxcode\Checks\Combat\Reach;
+use veroxcode\Checks\Movement\PredictionHorizontal;
 use veroxcode\Checks\Movement\Timer;
 use veroxcode\Checks\Packets\BadPacketsA;
 use veroxcode\Checks\World\GhostHand;

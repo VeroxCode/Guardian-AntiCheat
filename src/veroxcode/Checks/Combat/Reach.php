@@ -10,7 +10,6 @@ use veroxcode\Checks\Notifier;
 use veroxcode\Guardian;
 use veroxcode\User\User;
 use veroxcode\Utils\Constants;
-use veroxcode\Utils\Raycast;
 
 class Reach extends Check
 {
@@ -35,6 +34,14 @@ class Reach extends Check
 
             $victimUUID = $victim->getUniqueId()->toString();
             $victimUser = Guardian::getInstance()->getUserManager()->getUser($victimUUID);
+
+            $rawplayerVec = new Vector3($player->getPosition()->getX(), 0 , $player->getPosition()->getZ());
+            $rawvictimVec = new Vector3($victim->getPosition()->getX(), 0 , $victim->getPosition()->getZ());
+            $rawdistance = $rawplayerVec->distance($rawvictimVec);
+
+            if ($rawdistance <= $this->MAX_REACH){
+                return;
+            }
 
             $ping = $player->getNetworkSession()->getPing();
             $rewindTicks = ceil($ping / 50) + 2;
