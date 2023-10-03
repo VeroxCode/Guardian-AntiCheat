@@ -1,16 +1,16 @@
 <?php
 
-namespace veroxcode;
+namespace veroxcode\Guardian;
 
 use JsonException;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
-use veroxcode\Checks\CheckManager;
-use veroxcode\Listener\EventListener;
-use veroxcode\User\UserManager;
-use veroxcode\Utils\Constants;
+use veroxcode\Guardian\Checks\CheckManager;
+use veroxcode\Guardian\Listener\EventListener;
+use veroxcode\Guardian\User\UserManager;
+use veroxcode\Guardian\Utils\Constants;
 
 class Guardian extends PluginBase implements \pocketmine\event\Listener
 {

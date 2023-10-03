@@ -1,10 +1,6 @@
 <?php
 
-namespace veroxcode\Buffers;
-
-use pocketmine\math\AxisAlignedBB;
-use pocketmine\math\Vector2;
-use pocketmine\math\Vector3;
+namespace veroxcode\Guardian\Buffers;
 
 class AttackFrame
 {

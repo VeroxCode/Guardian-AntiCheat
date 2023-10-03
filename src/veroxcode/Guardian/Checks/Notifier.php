@@ -1,10 +1,9 @@
 <?php
 
-namespace veroxcode\Checks;
+namespace veroxcode\Guardian\Checks;
 
-use veroxcode\Guardian;
-use veroxcode\User\User;
-use veroxcode\Utils\Constants;
+use veroxcode\Guardian\Guardian;
+use veroxcode\Guardian\User\User;
 
 class Notifier
 {

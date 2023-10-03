@@ -1,16 +1,15 @@
 <?php
 
-namespace veroxcode\Checks;
+namespace veroxcode\Guardian\Checks;
 
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityMotionEvent;
 use pocketmine\event\player\PlayerJoinEvent;
-use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\network\mcpe\protocol\PlayerAuthInputPacket;
 use pocketmine\player\Player;
-use veroxcode\Guardian;
-use veroxcode\User\User;
+use veroxcode\Guardian\Guardian;
+use veroxcode\Guardian\User\User;
 
 class Check
 {

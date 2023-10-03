@@ -1,13 +1,12 @@
 <?php
 
-namespace veroxcode\Checks;
+namespace veroxcode\Guardian\Checks;
 
 use pocketmine\math\Vector3;
 use pocketmine\permission\BanEntry;
 use pocketmine\player\Player;
-use veroxcode\Guardian;
-use veroxcode\User\User;
-use veroxcode\Utils\Constants;
+use veroxcode\Guardian\Guardian;
+use veroxcode\Guardian\User\User;
 
 class Punishments
 {

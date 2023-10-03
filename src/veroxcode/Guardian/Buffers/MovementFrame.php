@@ -1,6 +1,6 @@
 <?php
 
-namespace veroxcode\Buffers;
+namespace veroxcode\Guardian\Buffers;
 
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\math\Vector2;

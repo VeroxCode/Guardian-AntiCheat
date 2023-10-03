@@ -1,6 +1,6 @@
 <?php
 
-namespace veroxcode\Listener;
+namespace veroxcode\Guardian\Listener;
 
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -9,20 +9,16 @@ use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
-use pocketmine\event\server\DataPacketSendEvent;
 use pocketmine\math\Vector2;
 use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
-use pocketmine\network\mcpe\protocol\LoginPacket;
 use pocketmine\network\mcpe\protocol\PlayerAuthInputPacket;
-use pocketmine\network\mcpe\protocol\SetActorMotionPacket;
 use pocketmine\network\mcpe\protocol\types\inventory\UseItemOnEntityTransactionData;
 use pocketmine\player\Player;
-use veroxcode\Buffers\AttackFrame;
-use veroxcode\Buffers\MovementFrame;
-use veroxcode\Checks\Check;
-use veroxcode\Guardian;
-use veroxcode\User\User;
-use veroxcode\Utils\Random;
+use veroxcode\Guardian\Buffers\AttackFrame;
+use veroxcode\Guardian\Buffers\MovementFrame;
+use veroxcode\Guardian\Guardian;
+use veroxcode\Guardian\User\User;
+use veroxcode\Guardian\Utils\Random;
 
 class EventListener implements Listener
 {

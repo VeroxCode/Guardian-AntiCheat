@@ -1,16 +1,14 @@
 <?php
 
-namespace veroxcode\Checks\Combat;
+namespace veroxcode\Guardian\Checks\Combat;
 
 use pocketmine\event\entity\EntityDamageByEntityEvent;
-use pocketmine\math\Vector3;
 use pocketmine\player\Player;
-use veroxcode\Checks\Check;
-use veroxcode\Checks\Notifier;
-use veroxcode\Guardian;
-use veroxcode\User\User;
-use veroxcode\Utils\Constants;
-use veroxcode\Utils\Raycast;
+use veroxcode\Guardian\Checks\Check;
+use veroxcode\Guardian\Checks\Notifier;
+use veroxcode\Guardian\Guardian;
+use veroxcode\Guardian\User\User;
+use veroxcode\Guardian\Utils\Constants;
 
 class AutoClicker extends Check
 {

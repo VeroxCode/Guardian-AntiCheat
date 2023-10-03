@@ -1,8 +1,6 @@
 <?php
 
-namespace veroxcode\User;
-
-use veroxcode\Guardian;
+namespace veroxcode\Guardian\User;
 
 class UserManager
 {

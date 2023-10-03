@@ -1,14 +1,13 @@
 <?php
 
-namespace veroxcode\User;
+namespace veroxcode\Guardian\User;
 
 use pocketmine\math\Vector3;
-use pocketmine\network\mcpe\protocol\types\InputMode;
-use veroxcode\Buffers\AttackFrame;
-use veroxcode\Buffers\MovementFrame;
-use veroxcode\Guardian;
-use veroxcode\Utils\Arrays;
-use veroxcode\Utils\Random;
+use veroxcode\Guardian\Buffers\AttackFrame;
+use veroxcode\Guardian\Buffers\MovementFrame;
+use veroxcode\Guardian\Guardian;
+use veroxcode\Guardian\Utils\Arrays;
+use veroxcode\Guardian\Utils\Random;
 
 class User
 {

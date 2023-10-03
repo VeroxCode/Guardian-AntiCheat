@@ -1,6 +1,6 @@
 <?php
 
-namespace veroxcode\Utils;
+namespace veroxcode\Guardian\Utils;
 
 use pocketmine\entity\Entity;
 use pocketmine\math\Vector3;

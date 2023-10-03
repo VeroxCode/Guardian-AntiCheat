@@ -1,14 +1,14 @@
 <?php
 
-namespace veroxcode\Checks\Movement;
+namespace veroxcode\Guardian\Checks\Movement;
 
 use pocketmine\network\mcpe\protocol\PlayerAuthInputPacket;
 use pocketmine\player\Player;
-use veroxcode\Checks\Check;
-use veroxcode\Checks\Notifier;
-use veroxcode\Checks\Punishments;
-use veroxcode\Guardian;
-use veroxcode\User\User;
+use veroxcode\Guardian\Checks\Check;
+use veroxcode\Guardian\Checks\Notifier;
+use veroxcode\Guardian\Checks\Punishments;
+use veroxcode\Guardian\Guardian;
+use veroxcode\Guardian\User\User;
 
 class Timer extends Check
 {

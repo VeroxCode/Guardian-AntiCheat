@@ -1,6 +1,6 @@
 <?php
 
-namespace veroxcode\Utils;
+namespace veroxcode\Guardian\Utils;
 
 class Arrays
 {

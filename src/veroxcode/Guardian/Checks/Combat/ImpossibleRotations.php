@@ -1,13 +1,13 @@
 <?php
 
-namespace veroxcode\Checks\Combat;
+namespace veroxcode\Guardian\Checks\Combat;
 
 use pocketmine\network\mcpe\protocol\PlayerAuthInputPacket;
 use pocketmine\player\Player;
-use veroxcode\Checks\Check;
-use veroxcode\Checks\Notifier;
-use veroxcode\User\User;
-use veroxcode\Utils\Rotations;
+use veroxcode\Guardian\Checks\Check;
+use veroxcode\Guardian\Checks\Notifier;
+use veroxcode\Guardian\User\User;
+use veroxcode\Guardian\Utils\Rotations;
 
 class ImpossibleRotations extends Check
 {

@@ -1,17 +1,17 @@
 <?php
 
-namespace veroxcode\Checks\World;
+namespace veroxcode\Guardian\Checks\World;
 
 use pocketmine\block\Bed;
 use pocketmine\block\Chest;
 use pocketmine\block\Glass;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\network\mcpe\protocol\types\InputMode;
-use veroxcode\Checks\Check;
-use veroxcode\Checks\Notifier;
-use veroxcode\Checks\Punishments;
-use veroxcode\User\User;
-use veroxcode\Utils\Raycast;
+use veroxcode\Guardian\Checks\Check;
+use veroxcode\Guardian\Checks\Notifier;
+use veroxcode\Guardian\Checks\Punishments;
+use veroxcode\Guardian\User\User;
+use veroxcode\Guardian\Utils\Raycast;
 
 class GhostHand extends Check
 {

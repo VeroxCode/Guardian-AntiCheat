@@ -1,15 +1,16 @@
 <?php
 
-namespace veroxcode\Checks\Combat;
+namespace veroxcode\Guardian\Checks\Combat;
 
 use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\math\Vector3;
 use pocketmine\player\Player;
-use veroxcode\Checks\Check;
-use veroxcode\Checks\Notifier;
-use veroxcode\Guardian;
-use veroxcode\User\User;
-use veroxcode\Utils\Constants;
+use veroxcode\Guardian\Checks\Check;
+use veroxcode\Guardian\Checks\Notifier;
+use veroxcode\Guardian\Guardian;
+use veroxcode\Guardian\User\User;
+use veroxcode\Guardian\Utils\Constants;
 
 class Reach extends Check
 {
@@ -31,6 +32,10 @@ class Reach extends Check
         $victim = $event->getEntity();
 
         if ($player instanceof Player && $victim instanceof Player){
+
+            if ($event->getCause() !== EntityDamageEvent::CAUSE_ENTITY_ATTACK){
+                return;
+            }
 
             $victimUUID = $victim->getUniqueId()->toString();
             $victimUser = Guardian::getInstance()->getUserManager()->getUser($victimUUID);

@@ -1,17 +1,15 @@
 <?php
 
-namespace veroxcode\Checks\Combat;
+namespace veroxcode\Guardian\Checks\Combat;
 
 use pocketmine\event\entity\EntityDamageByEntityEvent;
-use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\types\InputMode;
 use pocketmine\player\Player;
-use veroxcode\Checks\Check;
-use veroxcode\Checks\Notifier;
-use veroxcode\Guardian;
-use veroxcode\User\User;
-use veroxcode\Utils\Constants;
-use veroxcode\Utils\Raycast;
+use veroxcode\Guardian\Checks\Check;
+use veroxcode\Guardian\Checks\Notifier;
+use veroxcode\Guardian\Guardian;
+use veroxcode\Guardian\User\User;
+use veroxcode\Guardian\Utils\Raycast;
 
 class Hitbox extends Check
 {
@@ -32,6 +30,11 @@ class Hitbox extends Check
                 return;
             }
 
+            $ray = Raycast::isBBOnLine($victim->getBoundingBox(), $player->getPosition(), $player->getDirectionVector(), $player->getPosition()->distance($victim->getPosition()));
+            if ($ray){
+                return;
+            }
+
             $victimUUID = $victim->getUniqueId()->toString();
             $victimUser = Guardian::getInstance()->getUserManager()->getUser($victimUUID);
 
@@ -43,9 +46,9 @@ class Hitbox extends Check
             }
 
             $rewindBuffer = $victimUser->rewindMovementBuffer($rewindTicks);
-            $ray = Raycast::EntityOnLine($rewindBuffer->getBoundingBox(), $player->getPosition(), $player->getDirectionVector(), $player->getPosition()->distance($victim->getPosition()));
+            $rewindray = Raycast::isBBOnLine($rewindBuffer->getBoundingBox(), $player->getPosition(), $player->getDirectionVector(), $player->getPosition()->distance($victim->getPosition()));
 
-            if (!$ray){
+            if (!$rewindray){
                 if ($user->getViolation($this->getName()) < $this->getMaxViolations()){
                     $user->increaseViolation($this->getName(), 2);
                 }

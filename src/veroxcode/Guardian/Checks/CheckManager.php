@@ -1,15 +1,14 @@
 <?php
 
-namespace veroxcode\Checks;
+namespace veroxcode\Guardian\Checks;
 
-use veroxcode\Checks\Combat\AutoClicker;
-use veroxcode\Checks\Combat\Hitbox;
-use veroxcode\Checks\Combat\ImpossibleRotations;
-use veroxcode\Checks\Combat\Reach;
-use veroxcode\Checks\Movement\PredictionHorizontal;
-use veroxcode\Checks\Movement\Timer;
-use veroxcode\Checks\Packets\BadPacketsA;
-use veroxcode\Checks\World\GhostHand;
+use veroxcode\Guardian\Checks\Combat\AutoClicker;
+use veroxcode\Guardian\Checks\Combat\Hitbox;
+use veroxcode\Guardian\Checks\Combat\ImpossibleRotations;
+use veroxcode\Guardian\Checks\Combat\Reach;
+use veroxcode\Guardian\Checks\Movement\Timer;
+use veroxcode\Guardian\Checks\Packets\BadPacketsA;
+use veroxcode\Guardian\Checks\World\GhostHand;
 
 class CheckManager
 {
