@@ -3,6 +3,7 @@
 namespace veroxcode\Guardian\Checks\Combat;
 
 use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\player\Player;
 use veroxcode\Guardian\Checks\Check;
 use veroxcode\Guardian\Checks\Notifier;
@@ -27,6 +28,10 @@ class AutoClicker extends Check
     public function onAttack(EntityDamageByEntityEvent $event, User $user): void
     {
         $player = $event->getDamager();
+
+        if ($event->getCause() !== EntityDamageEvent::CAUSE_ENTITY_ATTACK){
+            return;
+        }
 
         if ($player instanceof Player){
 

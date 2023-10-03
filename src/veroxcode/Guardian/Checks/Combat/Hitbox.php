@@ -3,6 +3,7 @@
 namespace veroxcode\Guardian\Checks\Combat;
 
 use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\network\mcpe\protocol\types\InputMode;
 use pocketmine\player\Player;
 use veroxcode\Guardian\Checks\Check;
@@ -26,7 +27,7 @@ class Hitbox extends Check
 
         if ($player instanceof Player && $victim instanceof Player){
 
-            if ($user->getInput() == 0 || $user->getInput() == InputMode::TOUCHSCREEN){
+            if ($user->getInput() == 0 || $user->getInput() == InputMode::TOUCHSCREEN || $event->getCause() !== EntityDamageEvent::CAUSE_ENTITY_ATTACK){
                 return;
             }
 
