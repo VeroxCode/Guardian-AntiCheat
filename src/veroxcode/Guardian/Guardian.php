@@ -147,7 +147,7 @@ class Guardian extends PluginBase implements \pocketmine\event\Listener
 		if ($config->get("config-version") === $pluginConfig["config-version"]) return;
 
 		$log->notice(TF::RED . "An outdated configuration detected.");
-        $log->notice(TF::GREEN . "The outdated plugin is renamed as \"old-config.yml\"!");
+		$log->notice(TF::GREEN . "The outdated plugin is renamed as \"old-config.yml\"!");
 		@rename($this->getDataFolder() . "/config.yml", $this->getDataFolder() . "/old-config.yml");
 		$this->saveDefaultConfig();
 	}
