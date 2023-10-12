@@ -24,10 +24,6 @@ class Guardian extends PluginBase implements \pocketmine\event\Listener
     {
         self::$instance = $this;
 
-        if ($this->getConfig()->get("config-version") == null || $this->getConfig()->get("config-version") != Constants::CONFIG_VERSION){
-            $this->getLogger()->warning(Constants::PREFIX . "Config Outdated! Proceed on ur own Risk.");
-        }
-
         $this->getServer()->getPluginManager()->registerEvents(new EventListener(), $this);
 
         $this->userManager = new UserManager();
