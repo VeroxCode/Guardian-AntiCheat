@@ -24,10 +24,6 @@ class Guardian extends PluginBase implements \pocketmine\event\Listener
     {
         self::$instance = $this;
 
-        @mkdir($this->getDataFolder());
-        $this->saveDefaultConfig();
-        $this->getResource("config.yml");
-
         if ($this->getConfig()->get("config-version") == null || $this->getConfig()->get("config-version") != Constants::CONFIG_VERSION){
             $this->getLogger()->warning(Constants::PREFIX . "Config Outdated! Proceed on ur own Risk.");
         }
@@ -36,7 +32,6 @@ class Guardian extends PluginBase implements \pocketmine\event\Listener
 
         $this->userManager = new UserManager();
         $this->checkManager = new CheckManager();
-
     }
 
     /**
@@ -127,4 +122,33 @@ class Guardian extends PluginBase implements \pocketmine\event\Listener
         return $this->userManager;
     }
 
+
+	/**
+	 * Updates the configuration to the latest version.
+	 * @return void
+	 */
+	private function checkConfig() : void {
+		$log = $this->getLogger();
+		$pluginConfigResource = $this->getResource("config.yml");
+		$pluginConfig = yaml_parse(stream_get_contents($pluginConfigResource));
+		fclose($pluginConfigResource);
+		$config = $this->getConfig();
+
+		if(!file_exists($this->getDataFolder() . "/config.yml")){
+			$this->saveDefaultConfig();
+		}
+		
+		if ($pluginConfig === false) {
+			$log->critical("Cannot check or detect configuration, is currupted plugin?");
+			$this->getServer()->getPluginManager()->disablePlugin($this);
+			return;
+		}
+
+		if ($config->get("config-version") === $pluginConfig["config-version"]) return;
+
+		$log->notice(TF::RED . "An outdated configuration detected.");
+        $log->notice(TF::GREEN . "The outdated plugin is renamed as \"old-config.yml\"!");
+		@rename($this->getDataFolder() . "/config.yml", $this->getDataFolder() . "/old-config.yml");
+		$this->saveDefaultConfig();
+	}
 }
