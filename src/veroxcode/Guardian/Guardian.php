@@ -24,6 +24,8 @@ class Guardian extends PluginBase implements \pocketmine\event\Listener
     {
         self::$instance = $this;
 
+		$this->checkConfig();
+
         $this->getServer()->getPluginManager()->registerEvents(new EventListener(), $this);
 
         $this->userManager = new UserManager();
@@ -132,6 +134,7 @@ class Guardian extends PluginBase implements \pocketmine\event\Listener
 
 		if(!file_exists($this->getDataFolder() . "/config.yml")){
 			$this->saveDefaultConfig();
+			return;
 		}
 		
 		if ($pluginConfig === false) {
