@@ -1,5 +1,38 @@
 <?php
 
+/*
+ *
+ *   _____                     _ _
+ *  / ____|                   | (_)
+ * | |  __ _   _  __ _ _ __ __| |_  __ _ _ __
+ * | | |_ | | | |/ _` | '__/ _` | |/ _` | '_ \
+ * | |__| | |_| | (_| | | | (_| | | (_| | | | |
+ *  \_____|\__,_|\__,_|_|  \__,_|_|\__,_|_| |_|
+ *                 _   _      _                _
+ *     /\         | | (_)    | |              | |
+ *    /  \   _ __ | |_ _  ___| |__   ___  __ _| |_
+ *   / /\ \ | '_ \| __| |/ __| '_ \ / _ \/ _` | __|
+ *  / ____ \| | | | |_| | (__| | | |  __/ (_| | |_
+ * /_/    \_\_| |_|\__|_|\___|_| |_|\___|\__,_|\__|
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Copyright (c) 2023 by VeroxCode <https://github.com/VeroxCode>
+ */
+
+declare(strict_types=1);
+
 namespace veroxcode\Guardian\Checks\Movement;
 
 use pocketmine\network\mcpe\protocol\PlayerAuthInputPacket;
@@ -10,35 +43,30 @@ use veroxcode\Guardian\Checks\Punishments;
 use veroxcode\Guardian\Guardian;
 use veroxcode\Guardian\User\User;
 
-class Timer extends Check
-{
+class Timer extends Check {
+	private int $MAX_TICK_DIFFERENCE;
 
-    private int $MAX_TICK_DIFFERENCE;
+	public function __construct() {
+		parent::__construct("Timer");
 
-    public function __construct()
-    {
-        parent::__construct("Timer");
+		$config = Guardian::getInstance()->getConfig();
+		$this->MAX_TICK_DIFFERENCE = $config->get("Timer-TickDifference") == null ? 10 : $config->get("Timer-TickDifference");
+	}
 
-        $config = Guardian::getInstance()->getConfig();
-        $this->MAX_TICK_DIFFERENCE = $config->get("Timer-TickDifference") == null ? 10 : $config->get("Timer-TickDifference");
+	public function onMove(Player $player, PlayerAuthInputPacket $packet, User $user) : void {
+		$newTickDelay = Guardian::getInstance()->getServer()->getTick() - $packet->getTick();
+		$delayDifference = $user->getTickDelay() - $newTickDelay;
 
-    }
-
-    public function onMove(Player $player, PlayerAuthInputPacket $packet, User $user): void
-    {
-        $newTickDelay = Guardian::getInstance()->getServer()->getTick() - $packet->getTick();
-        $delayDifference = $user->getTickDelay() - $newTickDelay;
-
-        if ($delayDifference >= $this->MAX_TICK_DIFFERENCE){
-            if ($user->getViolation($this->getName()) < $this->getMaxViolations()){
-                $user->increaseViolation($this->getName(), 1);
-            }else{
-                Notifier::NotifyFlag($player->getName(), $user, $this, $user->getViolation($this->getName()), $this->hasNotify());
-                Punishments::punishPlayer($player, $this, $user, $player->getPosition(), $this->getPunishment());
-                $user->setTickDelay($newTickDelay);
-            }
-        }else{
-            $user->decreaseViolation($this->getName(), 1);
-        }
-    }
+		if ($delayDifference >= $this->MAX_TICK_DIFFERENCE) {
+			if ($user->getViolation($this->getName()) < $this->getMaxViolations()) {
+				$user->increaseViolation($this->getName(), 1);
+			} else {
+				Notifier::NotifyFlag($player->getName(), $user, $this, $user->getViolation($this->getName()), $this->hasNotify());
+				Punishments::punishPlayer($player, $this, $user, $player->getPosition(), $this->getPunishment());
+				$user->setTickDelay($newTickDelay);
+			}
+		} else {
+			$user->decreaseViolation($this->getName(), 1);
+		}
+	}
 }
