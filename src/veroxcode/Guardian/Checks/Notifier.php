@@ -12,20 +12,20 @@ class Notifier
      * @param string $name
      * @param User $user
      * @param Check $Check
-     * @param int $Violation
+     * @param float $Violation
      * @param bool $notify
      * @return void
      */
-    public static function NotifyFlag(string $name, User $user, Check $Check, int $Violation, bool $notify) : void
+    public static function NotifyFlag(string $name, User $user, Check $Check, float $Violation, bool $notify) : void
     {
-        $config = Guardian::getInstance()->getConfig();
+        $config = Guardian::getInstance()->getSavedConfig();
         $user->increaseAlertCount($Check->getName());
 
-        if ($user->getAlertCount($Check->getName()) < Guardian::getInstance()->getConfig()->get($Check->getName() . "-AlertFrequency")){
+        if ($user->getAlertCount($Check->getName()) < Guardian::getInstance()->getSavedConfig()->get($Check->getName() . "-AlertFrequency")){
             return;
         }
 
-        if (!Guardian::getInstance()->getConfig()->get("enable-debug")){
+        if (!Guardian::getInstance()->getSavedConfig()->get("enable-debug")){
             if ($notify){
                 self::NotifyPlayers($name, $user, $Check);
             }
@@ -65,7 +65,7 @@ class Notifier
     public static function NotifyPlayers(string $name, User $user, Check $Check) : void
     {
 
-        $config = Guardian::getInstance()->getConfig();
+        $config = Guardian::getInstance()->getSavedConfig();
         $message = $config->get("alert-message");
         $prefix = $config->get("prefix");
 

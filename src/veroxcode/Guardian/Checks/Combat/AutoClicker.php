@@ -20,7 +20,7 @@ class AutoClicker extends Check
     {
         parent::__construct("AutoClicker");
 
-        $config = Guardian::getInstance()->getConfig();
+        $config = Guardian::getInstance()->getSavedConfig();
         $this->CPS_LIMIT = $config->get("CPS-Limit") == null ? Constants::CPS_LIMIT : $config->get("CPS-Limit");
 
     }

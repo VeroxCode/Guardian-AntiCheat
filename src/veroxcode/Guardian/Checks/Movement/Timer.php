@@ -19,7 +19,7 @@ class Timer extends Check
     {
         parent::__construct("Timer");
 
-        $config = Guardian::getInstance()->getConfig();
+        $config = Guardian::getInstance()->getSavedConfig();
         $this->MAX_TICK_DIFFERENCE = $config->get("Timer-TickDifference") == null ? 10 : $config->get("Timer-TickDifference");
 
     }

@@ -2,11 +2,18 @@
 
 namespace veroxcode\Guardian\User;
 
+use pocketmine\block\BlockTypeIds;
+use pocketmine\block\Ice;
+use pocketmine\math\Facing;
 use pocketmine\math\Vector3;
+use pocketmine\network\mcpe\protocol\PlayerAuthInputPacket;
+use pocketmine\network\mcpe\protocol\types\PlayerAuthInputFlags;
+use pocketmine\player\Player;
 use veroxcode\Guardian\Buffers\AttackFrame;
 use veroxcode\Guardian\Buffers\MovementFrame;
 use veroxcode\Guardian\Guardian;
 use veroxcode\Guardian\Utils\Arrays;
+use veroxcode\Guardian\Utils\Blocks;
 use veroxcode\Guardian\Utils\Random;
 
 class User
@@ -16,6 +23,7 @@ class User
     private CONST ATTACK_BUFFER_SIZE = 100;
 
     private Vector3 $motion;
+    private Vector3 $moveDelta;
 
     private string $uuid;
 
@@ -24,6 +32,11 @@ class User
 
     private float $moveForward = 0.0;
     private float $moveStrafe = 0.0;
+    private float $lastDistanceXZ = 0.0;
+
+    private int $ticksSinceJump = 0;
+    private int $ticksSinceLanding = 0;
+    private int $ticksSinceIce = 0;
 
     private int $lastKnockbackTick = 0;
     private int $firstServerTick = 0;
@@ -44,15 +57,55 @@ class User
     {
         $this->uuid = $uuid;
         $this->motion = Vector3::zero();
-        $config = Guardian::getInstance()->getConfig();
+        $config = Guardian::getInstance()->getSavedConfig();
 
         foreach (Guardian::getInstance()->getCheckManager()->getChecks() as $Check){
 
             $frequency = $config->get($Check->getName() . "-AlertFrequency");
 
-            $this->violations[$Check->getName()] = 0;
+            $this->violations[$Check->getName()] = 0.0;
             $this->alerts[$Check->getName()] = $frequency;
         }
+    }
+
+    public function preMove(PlayerAuthInputPacket $packet, Player $player) : void
+    {
+        $moveForward = Random::clamp(-1, 1, $packet->getMoveVecX());
+        $moveStrafe = Random::clamp(-1, 1, $packet->getMoveVecZ());
+
+        $blockBelow = $player->getWorld()->getBlock($player->getPosition()->getSide(Facing::DOWN));
+
+        $this->setMoveForward($moveForward);
+        $this->setMoveStrafe($moveStrafe);
+
+        $this->ticksSinceJump++;
+
+        if (!$player->isOnGround()){
+            $this->ticksSinceLanding = 0;
+        }else{
+            $this->ticksSinceLanding++;
+        }
+
+        if (Blocks::hasIceBelow($blockBelow)){
+            $this->ticksSinceIce = 0;
+        }else{
+            $this->ticksSinceIce++;
+        }
+
+        if ($packet->hasFlag(PlayerAuthInputFlags::START_JUMPING)){
+            $this->ticksSinceJump = 0;
+        }
+
+        if ($this->getFirstClientTick() == 0 && $this->getFirstServerTick() == 0){
+            $this->setFirstServerTick(Guardian::getInstance()->getServer()->getTick());
+            $this->setFirstClientTick($packet->getTick());
+            $this->setTickDelay(Guardian::getInstance()->getServer()->getTick() - $packet->getTick());
+        }
+
+        if ($this->getInput() == 0){
+            $this->setInput($packet->getInputMode());
+        }
+
     }
 
     public function getUUID(): string
@@ -70,10 +123,10 @@ class User
         $this->movementBuffer[$size] = $object;
     }
 
-    public function rewindMovementBuffer(int $ticks = 1) : MovementFrame
+    public function rewindMovementBuffer(int $ticks = 1) : ?MovementFrame
     {
         $size = count($this->movementBuffer) - 1;
-        return $this->movementBuffer[$size - $ticks];
+        return $this->movementBuffer[$size - $ticks] ?? null;
     }
 
     public function getMovementBuffer(): array
@@ -117,19 +170,19 @@ class User
         $this->violations[$Check] = 0;
     }
 
-    public function getViolation(string $Check) : int
+    public function getViolation(string $Check) : float
     {
         return $this->violations[$Check];
     }
 
     public function increaseAlertCount(string $Check, $amount = 1) : void
     {
-        $this->alerts[$Check] = Random::clamp(0, PHP_INT_MAX, $this->alerts[$Check] + $amount);
+        $this->alerts[$Check] = Random::clamp(0, PHP_FLOAT_MAX, $this->alerts[$Check] + $amount);
     }
 
     public function decreaseAlertCount(string $Check, $amount = 1) : void
     {
-        $this->alerts[$Check] = Random::clamp(0, PHP_INT_MAX, $this->alerts[$Check] - $amount);
+        $this->alerts[$Check] = Random::clamp(0, PHP_FLOAT_MAX, $this->alerts[$Check] - $amount);
     }
 
     public function resetAlertCount(string $Check) : void
@@ -212,6 +265,11 @@ class User
         $this->lastKnockbackTick = $lastKnockbackTick;
     }
 
+    public function hasMotion() : bool
+    {
+        return $this->motion->length() != 0;
+    }
+
     public function getMotion(): Vector3
     {
         return $this->motion;
@@ -250,6 +308,41 @@ class User
     public function setPunishNext(bool $punishNext): void
     {
         $this->punishNext = $punishNext;
+    }
+
+    public function getMoveDelta(): Vector3
+    {
+        return $this->moveDelta;
+    }
+
+    public function setMoveDelta(Vector3 $moveDelta): void
+    {
+        $this->moveDelta = $moveDelta;
+    }
+
+    public function getLastDistanceXZ(): float
+    {
+        return $this->lastDistanceXZ;
+    }
+
+    public function setLastDistanceXZ(float $lastDistanceXZ): void
+    {
+        $this->lastDistanceXZ = $lastDistanceXZ;
+    }
+
+    public function getTicksSinceJump(): int
+    {
+        return $this->ticksSinceJump;
+    }
+
+    public function getTicksSinceLanding(): int
+    {
+        return $this->ticksSinceLanding;
+    }
+
+    public function getTicksSinceIce(): int
+    {
+        return $this->ticksSinceIce;
     }
 
 }

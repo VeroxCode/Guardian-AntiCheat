@@ -58,11 +58,7 @@ class EventListener implements Listener
 
         if ($packet instanceof PlayerAuthInputPacket){
 
-            $moveForward = Random::clamp(-0.98, 0.98, $packet->getMoveVecX());
-            $moveStrafe = Random::clamp(-0.98, 0.98, $packet->getMoveVecZ());
-
-            $user->setMoveForward($moveForward);
-            $user->setMoveStrafe($moveStrafe);
+            $user->preMove($packet, $player);
 
             foreach (Guardian::getInstance()->getCheckManager()->getChecks() as $Check){
                 $Check->onMove($player, $packet, $user);
@@ -78,16 +74,6 @@ class EventListener implements Listener
                 $event->getOrigin()->getPlayer()->boundingBox
             );
             $user->addToMovementBuffer($NewBuffer);
-
-            if ($user->getFirstClientTick() == 0 && $user->getFirstServerTick() == 0){
-                $user->setFirstServerTick($this->getServerTick());
-                $user->setFirstClientTick($packet->getTick());
-                $user->setTickDelay($this->getServerTick() - $packet->getTick());
-            }
-
-            if ($user->getInput() == 0){
-                $user->setInput($packet->getInputMode());
-            }
 
         }
 

@@ -7,6 +7,7 @@ use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
+use pocketmine\utils\Config;
 use veroxcode\Guardian\Checks\CheckManager;
 use veroxcode\Guardian\Listener\EventListener;
 use veroxcode\Guardian\User\UserManager;
@@ -17,6 +18,7 @@ class Guardian extends PluginBase implements \pocketmine\event\Listener
 
     private static Guardian $instance;
 
+    public ?Config $config;
     public UserManager $userManager;
     public CheckManager $checkManager;
 
@@ -25,12 +27,18 @@ class Guardian extends PluginBase implements \pocketmine\event\Listener
         self::$instance = $this;
 
         @mkdir($this->getDataFolder());
-        $this->saveDefaultConfig();
-        $this->getResource("config.yml");
+        $this->saveResource("SavedConfig.yml");
+        $default = new Config($this->getResourceFolder() . "config.yml", Config::YAML);
+        $this->config = new Config($this->getDataFolder() . "SavedConfig.yml", Config::YAML);
 
-        if ($this->getConfig()->get("config-version") == null || $this->getConfig()->get("config-version") != Constants::CONFIG_VERSION){
-            $this->getLogger()->warning(Constants::PREFIX . "Config Outdated! Proceed on ur own Risk.");
+        foreach ($default->getAll(true) as $key){
+            if ($this->getSavedConfig()->get($key) == null){
+                $this->getSavedConfig()->set($key, $default->get($key));
+            }
         }
+
+        $this->getSavedConfig()->set("config-version", Constants::CONFIG_VERSION);
+        $this->getSavedConfig()->save();
 
         $this->getServer()->getPluginManager()->registerEvents(new EventListener(), $this);
 
@@ -50,7 +58,7 @@ class Guardian extends PluginBase implements \pocketmine\event\Listener
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool
    {
 
-       $config = $this->getConfig();
+       $config = $this->getSavedConfig();
        $prefix = $config->get("prefix");
 
        if ($command->getName() == "guardian") {
@@ -61,15 +69,15 @@ class Guardian extends PluginBase implements \pocketmine\event\Listener
                        .   $prefix . "§f debug §8- Enable/Disable Debug Mode\n"
                        .   $prefix . "§f notifications §8- Enable/Disable Notifications for yourself\n"
                        .   $prefix . "§f notify <Check> §8- Enable/Disable Notifications for certain Checks");
-                       $this->getConfig()->save();
+                       $this->getSavedConfig()->save();
                        return true;
                    }
 
                if ($args[0] == "debug"){
-                   $debug = $this->getConfig()->get("enable-debug");
-                   $this->getConfig()->set("enable-debug", !$debug);
+                   $debug = $this->getSavedConfig()->get("enable-debug");
+                   $this->getSavedConfig()->set("enable-debug", !$debug);
                    $sender->sendMessage($prefix . " §8Done.");
-                   $this->getConfig()->save();
+                   $this->getSavedConfig()->save();
                    return true;
                }
 
@@ -78,12 +86,12 @@ class Guardian extends PluginBase implements \pocketmine\event\Listener
                        return false;
                    }
 
-                   $newnotify = $this->getConfig()->get($args[1] . "-notify");
+                   $newnotify = $this->getSavedConfig()->get($args[1] . "-notify");
                    if ($this->getCheckManager()->getCheckByName($args[1]) != null){
                        $this->getCheckManager()->getCheckByName($args[1])->setNotify(!$newnotify);
-                       $this->getConfig()->set($args[1] . "-notify", !$newnotify);
+                       $this->getSavedConfig()->set($args[1] . "-notify", !$newnotify);
                        $sender->sendMessage($prefix . " §8Done.");
-                       $this->getConfig()->save();
+                       $this->getSavedConfig()->save();
                        return true;
                    }
                }
@@ -103,28 +111,24 @@ class Guardian extends PluginBase implements \pocketmine\event\Listener
        return false;
    }
 
-    /**
-     * @return Guardian
-     */
     public static function getInstance() : Guardian
    {
        return self::$instance;
    }
 
-    /**
-     * @return CheckManager
-     */
     public function getCheckManager() : CheckManager
    {
        return $this->checkManager;
    }
 
-    /**
-     * @return UserManager
-     */
     public function getUserManager() : UserManager
     {
         return $this->userManager;
+    }
+
+    public function getSavedConfig() : Config
+    {
+        return $this->config;
     }
 
 }

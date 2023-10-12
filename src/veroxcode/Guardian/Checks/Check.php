@@ -30,7 +30,7 @@ class Check
     {
         $this->name = $name;
 
-        $config = Guardian::getInstance()->getConfig();
+        $config = Guardian::getInstance()->getSavedConfig();
         $this->maxViolations = $config->get($name . "-MaxViolations") == 42 ? false : $config->get($name . "-MaxViolations");
         $this->notify = $config->get($name . "-notify") == null ? false : $config->get($name . "-notify");
         $this->punishment = $config->get($name . "-Punishment") == null ? "Block" : $config->get($name . "-Punishment");
@@ -43,9 +43,9 @@ class Check
     public function onBlockBreak(BlockBreakEvent $event, User $user) : void {}
 
     /**
-     * @return int
+     * @return float
      */
-    public function getMaxViolations(): int
+    public function getMaxViolations(): float
     {
         return $this->maxViolations;
     }

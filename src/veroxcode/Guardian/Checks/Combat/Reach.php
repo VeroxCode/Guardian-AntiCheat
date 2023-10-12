@@ -5,6 +5,7 @@ namespace veroxcode\Guardian\Checks\Combat;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\math\Vector3;
+use pocketmine\player\GameMode;
 use pocketmine\player\Player;
 use veroxcode\Guardian\Checks\Check;
 use veroxcode\Guardian\Checks\Notifier;
@@ -21,7 +22,7 @@ class Reach extends Check
     {
         parent::__construct("Reach");
 
-        $config = Guardian::getInstance()->getConfig();
+        $config = Guardian::getInstance()->getSavedConfig();
         $this->MAX_REACH = $config->get("Maximum-Reach") == null ? Constants::ATTACK_REACH : $config->get("Maximum-Reach");
 
     }
@@ -33,7 +34,9 @@ class Reach extends Check
 
         if ($player instanceof Player && $victim instanceof Player){
 
-            if ($event->getCause() !== EntityDamageEvent::CAUSE_ENTITY_ATTACK){
+            $eligibleGamemode = $player->getGamemode() === GameMode::SURVIVAL() || $player->getGamemode() === GameMode::ADVENTURE();
+
+            if ($event->getCause() !== EntityDamageEvent::CAUSE_ENTITY_ATTACK || !$eligibleGamemode){
                 return;
             }
 

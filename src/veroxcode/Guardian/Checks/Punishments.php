@@ -13,11 +13,14 @@ class Punishments
 
     /**
      * @param Player $player
+     * @param Check $check
+     * @param User $user
      * @param Vector3|null $position
      * @param string|null $punishment
+     * @param bool $reset
      * @return void
      */
-    public static function punishPlayer(Player $player, Check $check, User $user, ?Vector3 $position, ?string $punishment): void
+    public static function punishPlayer(Player $player, Check $check, User $user, ?Vector3 $position, ?string $punishment, bool $reset = true): void
     {
         if ($punishment == null){
             return;
@@ -27,7 +30,7 @@ class Punishments
             case "Cancel":
                 if ($position != null){
                     $player->teleport($position);
-                    $user->resetViolation($check->getName());
+                    if ($reset) $user->resetViolation($check->getName());
                 }
                 break;
             case "Kick":
@@ -41,7 +44,7 @@ class Punishments
 
     public static function KickUser(Player $player): void
     {
-        $config = Guardian::getInstance()->getConfig();
+        $config = Guardian::getInstance()->getSavedConfig();
         $message = $config->get("kick-message");
         $prefix = $config->get("prefix");
 
@@ -54,7 +57,7 @@ class Punishments
     public static function BanUser(Player $player): void
     {
 
-        $config = Guardian::getInstance()->getConfig();
+        $config = Guardian::getInstance()->getSavedConfig();
         $message = $config->get("ban-message");
         $prefix = $config->get("prefix");
 
