@@ -10,12 +10,12 @@
 - [X] AutoClicker/CPS
 - [X] BadPackets
 - [X] BedBreaker/Bedfucker
+- [X] ImpossibleRotations
+- [X] Distance Prediction/Speed
 
 ### Checks & Features to be made:
 
-- [ ] Movement Prediction/Simulation
 - [ ] Gravity Simulation
-- [ ] Tower
 - [ ] NoKnockback
 - [ ] FastEat
-- [ ] Instant Rotations/Killaura     
+- [ ] Instant Rotations/Killaura
