@@ -12,6 +12,7 @@ use veroxcode\Guardian\Checks\Notifier;
 use veroxcode\Guardian\Guardian;
 use veroxcode\Guardian\User\User;
 use veroxcode\Guardian\Utils\Constants;
+use veroxcode\Guardian\Utils\Raycast;
 
 class Reach extends Check
 {
@@ -29,52 +30,58 @@ class Reach extends Check
 
     public function onAttack(EntityDamageByEntityEvent $event, User $user): void
     {
-        $player = $event->getDamager();
+        $player = $user->getPlayer();
         $victim = $event->getEntity();
 
-        if ($player instanceof Player && $victim instanceof Player){
+        if ($victim instanceof Player){
 
             $eligibleGamemode = $player->getGamemode() === GameMode::SURVIVAL() || $player->getGamemode() === GameMode::ADVENTURE();
 
-            if ($event->getCause() !== EntityDamageEvent::CAUSE_ENTITY_ATTACK || !$eligibleGamemode){
+            if ($event->getCause() !== EntityDamageEvent::CAUSE_ENTITY_ATTACK || !$eligibleGamemode || $user->getTicksSinceJoin() < 40){
                 return;
             }
 
             $victimUUID = $victim->getUniqueId()->toString();
             $victimUser = Guardian::getInstance()->getUserManager()->getUser($victimUUID);
 
-            $rawplayerVec = new Vector3($player->getPosition()->getX(), 0 , $player->getPosition()->getZ());
-            $rawvictimVec = new Vector3($victim->getPosition()->getX(), 0 , $victim->getPosition()->getZ());
-            $rawdistance = $rawplayerVec->distance($rawvictimVec);
+            $rayVec = Raycast::isBBOnLine($victim->getPosition(), $player->getPosition(), $player->getDirectionVector(), $this->MAX_REACH);
 
-            if ($rawdistance <= $this->MAX_REACH){
+            if ($rayVec){
                 return;
             }
 
             $ping = $player->getNetworkSession()->getPing();
-            $rewindTicks = ceil($ping / 50) + 2;
+            $rewindTicks = ceil($ping / 50) + 3;
 
-            if (count($victimUser->getMovementBuffer()) <= $rewindTicks || count($user->getMovementBuffer()) <= $rewindTicks){
-                return;
-            }
+            $victimPing = $victimUser->getPlayer()->getNetworkSession()->getPing();
+            $victimTicks = ceil($victimPing / 50) + 2;
 
-            $rewindBuffer = $victimUser->rewindMovementBuffer($rewindTicks);
-            $playerVec = new Vector3($player->getPosition()->getX(), 0 , $player->getPosition()->getZ());
-            $victimVec = new Vector3($rewindBuffer->getPosition()->getX(), 0 , $rewindBuffer->getPosition()->getZ());
-            $distance = $playerVec->distance($victimVec);
+            for ($i = 0; $i < $rewindTicks; $i++) {
+                for ($j = 0; $i < $victimTicks; $j++) {
+                    $rewindVictim = $victimUser->rewindMovementBuffer($j);
+                    $playerXZ = new Vector3($player->getPosition()->getX(), 0, $player->getPosition()->getZ());
+                    $victimXZ = new Vector3($rewindVictim->getPosition()->getX(), 0, $rewindVictim->getPosition()->getZ());
+                    $distXZ = $playerXZ->distance($victimXZ);
+                    $distY = abs($player->getPosition()->getY() - $rewindVictim->getPosition()->getY());
 
-            if ($distance > $this->MAX_REACH) {
-                if ($user->getViolation($this->getName()) < $this->getMaxViolations()){
-                    $user->increaseViolation($this->getName(), 2);
+                    if ($distXZ < Constants::ATTACK_REACH && $distY < Constants::ATTACK_REACH + 0.6) {
+                        $user->decreaseViolation($this->getName());
+                        return;
+                    }
                 }
-            }else{
-                $user->decreaseViolation($this->getName(), 1);
+
             }
 
-            if ($user->getViolation($this->getName()) >= $this->getMaxViolations()){
-                Notifier::NotifyFlag($player->getName(), $user, $this, $user->getViolation($this->getName()), $this->hasNotify());
-                $event->cancel();
+            if ($user->getViolation($this->getName()) < $this->getMaxViolations()) {
+                $user->increaseViolation($this->getName(), 2);
             }
+
+            $event->cancel();
+
+            if ($user->getViolation($this->getName()) >= $this->getMaxViolations()) {
+                Notifier::NotifyFlag($player->getName(), $user, $this, $user->getViolation($this->getName()), $this->hasNotify());
+            }
+
         }
     }
 

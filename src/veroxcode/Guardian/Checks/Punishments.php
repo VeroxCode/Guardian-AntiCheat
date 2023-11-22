@@ -12,16 +12,18 @@ class Punishments
 {
 
     /**
-     * @param Player $player
      * @param Check $check
      * @param User $user
      * @param Vector3|null $position
-     * @param string|null $punishment
      * @param bool $reset
      * @return void
      */
-    public static function punishPlayer(Player $player, Check $check, User $user, ?Vector3 $position, ?string $punishment, bool $reset = true): void
+    public static function punishPlayer(Check $check, User $user, ?Vector3 $position, bool $reset = true): void
     {
+
+        $punishment = $check->getPunishment();
+        $player = $user->getPlayer();
+
         if ($punishment == null){
             return;
         }
@@ -30,19 +32,38 @@ class Punishments
             case "Cancel":
                 if ($position != null){
                     $player->teleport($position);
-                    if ($reset) $user->resetViolation($check->getName());
+                    $user->handleCorrection($position);
                 }
                 break;
             case "Kick":
-                self::KickUser($player);
+                if (Guardian::getInstance()->debugEnabled()){
+                    self::SentTitleMessage($player, $check, " (Kick)");
+                }else{
+                    self::KickUser($player, $check);
+                }
                 break;
             case "Ban":
-                self::BanUser($player);
+                if (Guardian::getInstance()->debugEnabled()){
+                    self::SentTitleMessage($player, $check, " (Ban)");
+                }else{
+                    self::BanUser($player);
+                }
                 break;
+        }
+        if ($reset){
+            $user->resetViolation($check->getName());
         }
     }
 
-    public static function KickUser(Player $player): void
+    public static function SentTitleMessage(Player $player, Check $check, string $extra): void
+    {
+        $config = Guardian::getInstance()->getSavedConfig();
+        $prefix = $config->get("prefix");
+
+        $player->sendTitle($prefix . " " . $check->getName() . $extra);
+    }
+
+    public static function KickUser(Player $player, Check $check): void
     {
         $config = Guardian::getInstance()->getSavedConfig();
         $message = $config->get("kick-message");

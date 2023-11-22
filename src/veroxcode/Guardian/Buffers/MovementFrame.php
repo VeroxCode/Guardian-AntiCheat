@@ -23,6 +23,8 @@ class MovementFrame
     private bool $onGround;
     /*** @var AxisAlignedBB */
     private AxisAlignedBB $BoundingBox;
+    /*** @var Vector3 */
+    private Vector3 $Direction;
 
     /**
      * @param int $ServerTick
@@ -32,8 +34,9 @@ class MovementFrame
      * @param float $HeadYaw
      * @param bool $onGround
      * @param AxisAlignedBB $BoundingBox
+     * @param Vector3 $Direction
      */
-    public function __construct(int $ServerTick, int $PlayerTick, Vector3 $Position, Vector2 $Rotation, float $HeadYaw, bool $onGround, AxisAlignedBB $BoundingBox)
+    public function __construct(int $ServerTick, int $PlayerTick, Vector3 $Position, Vector2 $Rotation, float $HeadYaw, bool $onGround, AxisAlignedBB $BoundingBox, Vector3 $Direction)
     {
         $this->ServerTick = $ServerTick;
         $this->PlayerTick = $PlayerTick;
@@ -42,6 +45,7 @@ class MovementFrame
         $this->HeadYaw = $HeadYaw;
         $this->onGround = $onGround;
         $this->BoundingBox = $BoundingBox;
+        $this->Direction = $Direction;
     }
 
     /**
@@ -98,6 +102,14 @@ class MovementFrame
     public function getHeadYaw(): float
     {
         return $this->HeadYaw;
+    }
+
+    /**
+     * @return Vector3
+     */
+    public function getDirection(): Vector3
+    {
+        return $this->Direction;
     }
 
 }

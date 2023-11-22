@@ -8,13 +8,16 @@ use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\event\entity\EntityMotionEvent;
 use pocketmine\math\Facing;
 use pocketmine\math\Vector3;
+use pocketmine\network\mcpe\protocol\CorrectPlayerMovePredictionPacket;
 use pocketmine\network\mcpe\protocol\PlayerAuthInputPacket;
+use pocketmine\network\mcpe\protocol\types\PlayerAuthInputFlags;
 use pocketmine\player\GameMode;
 use pocketmine\player\Player;
 use veroxcode\Guardian\Checks\Check;
 use veroxcode\Guardian\Checks\Notifier;
 use veroxcode\Guardian\Checks\Punishments;
 use veroxcode\Guardian\User\User;
+use veroxcode\Guardian\Utils\Blocks;
 use veroxcode\Guardian\Utils\Constants;
 use veroxcode\Guardian\Utils\Random;
 
@@ -28,15 +31,17 @@ class Speed extends Check
 
     public function onMotion(EntityMotionEvent $event, User $user): void
     {
-        $user->setMotion($event->getVector());
+        $user->getMotion()->x += abs($event->getVector()->getX());
+        $user->getMotion()->z += abs($event->getVector()->getZ());
     }
 
-    public function onMove(Player $player, PlayerAuthInputPacket $packet, User $user): void
+    public function onMove(PlayerAuthInputPacket $packet, User $user): void
     {
 
+        $player = $user->getPlayer();
         $eligibleGamemode = $player->getGamemode() === GameMode::SURVIVAL() || $player->getGamemode() === GameMode::ADVENTURE();
 
-        if (!$eligibleGamemode){
+        if (!$eligibleGamemode || $player->isGliding() || $user->getTicksSinceCorrection() <= 2 || $user->getTicksSinceJoin() < 40){
             return;
         }
 
@@ -55,51 +60,51 @@ class Speed extends Check
         $acceleration = self::getAcceleration($movement, $effects, $friction, $player->isOnGround());
 
         $expected = $momentum + $acceleration;
-        $expected = Random::clamp(0.1, PHP_FLOAT_MAX, $expected);
 
-       if ($user->hasMotion()){
-            $motion = $user->getMotion();
-            $knockback = $motion->length();
+        if (abs($user->getMotion()->getX()) > 0 || abs($user->getMotion()->getZ()) > 0){
+            $motionX = abs($user->getMotion()->getX());
+            $motionZ = abs($user->getMotion()->getZ());
+            $knockback = $motionX * $motionX + $motionZ * $motionZ;
 
-            $knockback *= 3.5;
+            $knockback *= 4;
             $expected += $knockback;
 
-            $user->setMotion(Vector3::zero());
-        }
+            $user->getMotion()->x = 0;
+            $user->getMotion()->z = 0;
+       }
+
+        $expected += ($user->getTicksSinceJump() < 5 && Blocks::hasBlocksAbove($player)) ? 0.8 : 0;
+        $expected += $user->getTicksSinceStep() < 5 ? 0.9 : 0;
 
         $user->setLastDistanceXZ($expected);
-        $expected += ($player->isOnGround() && $user->getTicksSinceLanding() < 10) ? 0.35 : 0;
+
+        $expected += ($player->isOnGround() && $user->getTicksSinceLanding() < 10) ? 0.4 : 0;
+        $expected += ($packet->hasFlag(PlayerAuthInputFlags::START_JUMPING) && $user->getTicksSinceLanding() > 5) ? 0.26 : 0;
         $expected += ($user->getTicksSinceJump() <= 20 && $user->getTicksSinceIce() <= 20) ? 0.2 : 0;
-        $expected += $user->getTicksSinceJump() <= 10 ? 0.1 : 0;
-        $expected += $user->getTicksSinceJump() <= 3 ? 0.3 : 0;
 
         $dist = $previous->distance($next);
+        $distDiff = abs($dist - $expected);
 
-        if ($dist > $expected){
+        if ($dist > $expected && $distDiff > Constants::SPEED_THRESHOLD){
             if ($user->getViolation($this->getName()) < $this->getMaxViolations()){
                 $user->increaseViolation($this->getName());
+
+                if ($this->getPunishment() == "Cancel"){
+                    Punishments::punishPlayer($this, $user, $player->getPosition());
+                }else{
+                    if ($player->isUsingItem()){
+                        $player->teleport($player->getPosition());
+                        $user->handleCorrection($player->getPosition());
+                    }
+                }
+
             }else{
                 Notifier::NotifyFlag($player->getName(), $user, $this, $user->getViolation($this->getName()), $this->hasNotify());
-                Punishments::punishPlayer($player, $this, $user, $player->getPosition(), $this->getPunishment());
+                Punishments::punishPlayer($this, $user, $player->getPosition());
             }
         }else{
             $user->decreaseViolation($this->getName(), 0.5);
         }
-
-    }
-
-    public function getMotionMovement(User $user, float $yaw, Vector3 $previous) : Vector3
-    {
-        $forward = $user->getMoveForward();
-        $strafe = $user->getMoveStrafe();
-
-        $X = -sin($yaw) * Constants::BLOCKS_PER_TICK;
-        $Z = cos($yaw) * Constants::BLOCKS_PER_TICK;
-
-        $X *= $forward;
-        $Z *= $strafe;
-
-        return new Vector3($previous->x + $X, $previous->y, $previous->z + $Z);
     }
 
     public function getMovement(Player $player, Vector3 $move): float

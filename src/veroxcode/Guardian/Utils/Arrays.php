@@ -11,6 +11,7 @@ class Arrays
      */
     public static function removeFirst(array $array) : array
     {
+        $array[0] = null;
         array_shift($array);
         return $array;
     }

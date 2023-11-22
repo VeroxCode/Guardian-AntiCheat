@@ -6,9 +6,11 @@ use veroxcode\Guardian\Checks\Combat\AutoClicker;
 use veroxcode\Guardian\Checks\Combat\Hitbox;
 use veroxcode\Guardian\Checks\Combat\ImpossibleRotations;
 use veroxcode\Guardian\Checks\Combat\Reach;
+use veroxcode\Guardian\Checks\Movement\Fly;
 use veroxcode\Guardian\Checks\Movement\Speed;
 use veroxcode\Guardian\Checks\Movement\Timer;
 use veroxcode\Guardian\Checks\Packets\BadPacketsA;
+use veroxcode\Guardian\Checks\Packets\BadPacketsB;
 use veroxcode\Guardian\Checks\World\GhostHand;
 
 class CheckManager
@@ -22,13 +24,15 @@ class CheckManager
     public function __construct()
     {
         $this->Checks[] = new Reach();
-        $this->Checks[] = new Hitbox();
+        //$this->Checks[] = new Hitbox();
         $this->Checks[] = new Timer();
         $this->Checks[] = new AutoClicker();
         $this->Checks[] = new BadPacketsA();
+        $this->Checks[] = new BadPacketsB();
         $this->Checks[] = new GhostHand();
         $this->Checks[] = new ImpossibleRotations();
         $this->Checks[] = new Speed();
+        $this->Checks[] = new Fly();
     }
 
     /**

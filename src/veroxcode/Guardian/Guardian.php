@@ -111,24 +111,29 @@ class Guardian extends PluginBase implements \pocketmine\event\Listener
        return false;
    }
 
-    public static function getInstance() : Guardian
+    public static function getInstance(): Guardian
    {
        return self::$instance;
    }
 
-    public function getCheckManager() : CheckManager
+    public function getCheckManager(): CheckManager
    {
        return $this->checkManager;
    }
 
-    public function getUserManager() : UserManager
+    public function getUserManager(): UserManager
     {
         return $this->userManager;
     }
 
-    public function getSavedConfig() : Config
+    public function getSavedConfig(): Config
     {
         return $this->config;
+    }
+
+    public function debugEnabled(): bool
+    {
+        return $this->getSavedConfig()->get("enable-debug");
     }
 
 }

@@ -4,13 +4,17 @@ namespace veroxcode\Guardian\Checks\World;
 
 use pocketmine\block\Bed;
 use pocketmine\block\Chest;
+use pocketmine\block\Cobweb;
 use pocketmine\block\Glass;
+use pocketmine\block\Grass;
+use pocketmine\block\Vine;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\network\mcpe\protocol\types\InputMode;
 use veroxcode\Guardian\Checks\Check;
 use veroxcode\Guardian\Checks\Notifier;
 use veroxcode\Guardian\Checks\Punishments;
 use veroxcode\Guardian\User\User;
+use veroxcode\Guardian\Utils\Blocks;
 use veroxcode\Guardian\Utils\Raycast;
 
 class GhostHand extends Check
@@ -24,44 +28,45 @@ class GhostHand extends Check
     public function onBlockBreak(BlockBreakEvent $event, User $user): void
     {
 
-        if ($user->getInput() == 0 || $user->getInput() == InputMode::TOUCHSCREEN){
+        if ($user->getInput() == 0 || $user->getInput() == InputMode::TOUCHSCREEN || $user->getTicksSinceJoin() < 100){
             return;
         }
 
         $block = $event->getBlock();
-        $player = $event->getPlayer();
-        $distance = $player->getPosition()->distance($block->getPosition());
-        $rayBlock = Raycast::getBlockOnLine($player, $player->getPosition(), $player->getDirectionVector(), $distance);
+        $player = $user->getPlayer();
 
-        if ($rayBlock != null){
-            if (str_contains(strtolower($block->getName()), "grass") && !$block->isFullCube() || str_contains(strtolower($block->getName()), "layer") && !$block->isFullCube()){
-                return;
-            }
+        $ping = $player->getNetworkSession()->getPing();
+        $rewindTicks = ceil($ping / 50) + 20;
 
-            if ($block->isTransparent()){
-                if (!($block instanceof Bed || $block instanceof Glass || $block instanceof Chest)) {
+        if ($block instanceof Cobweb || $block instanceof Vine || !$block->isFullCube()){
+            return;
+        }
+
+        for ($i = 0; $i < $rewindTicks; $i++) {
+            $rewindUser = $user->rewindMovementBuffer($i);
+            $distance = $rewindUser->getPosition()->distance($block->getPosition());
+            $rayBlock = Raycast::getBlockOnLine($player, $rewindUser->getPosition(), $rewindUser->getDirection(), $distance);
+
+            if ($rayBlock != null){
+                if ($rayBlock === $block){
+                    $user->decreaseViolation($this->getName(), 1);
                     return;
                 }
             }
-
-            if ($rayBlock !== $block){
-                $event->cancel();
-                if ($user->getViolation($this->getName()) < $this->getMaxViolations()) {
-                    $user->increaseViolation($this->getName(), 2);
-                }
-            }else{
-                $user->decreaseViolation($this->getName(), 1);
-            }
-
-            if ($user->getViolation($this->getName()) >= $this->getMaxViolations()){
-                Notifier::NotifyFlag($player->getName(), $user, $this, $user->getViolation($this->getName()), $this->hasNotify());
-                if ($this->getPunishment() != "Cancel") {
-                    Punishments::punishPlayer($player, $this, $user, $player->getPosition(), $this->getPunishment());
-                }
-            }
-
-
         }
+
+        $event->cancel();
+        if ($user->getViolation($this->getName()) < $this->getMaxViolations()) {
+            $user->increaseViolation($this->getName(), 2);
+        }
+
+        if ($user->getViolation($this->getName()) >= $this->getMaxViolations()){
+            Notifier::NotifyFlag($player->getName(), $user, $this, $user->getViolation($this->getName()), $this->hasNotify());
+            if ($this->getPunishment() != "Cancel") {
+                Punishments::punishPlayer($this, $user, $player->getPosition());
+            }
+        }
+
     }
 
 }

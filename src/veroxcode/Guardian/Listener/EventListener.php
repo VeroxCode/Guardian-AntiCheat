@@ -12,13 +12,16 @@ use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\math\Vector2;
 use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
 use pocketmine\network\mcpe\protocol\PlayerAuthInputPacket;
+use pocketmine\network\mcpe\protocol\StartGamePacket;
 use pocketmine\network\mcpe\protocol\types\inventory\UseItemOnEntityTransactionData;
+use pocketmine\network\mcpe\protocol\types\PlayerAuthInputFlags;
+use pocketmine\network\mcpe\protocol\types\PlayerMovementSettings;
+use pocketmine\network\mcpe\protocol\types\PlayerMovementType;
 use pocketmine\player\Player;
 use veroxcode\Guardian\Buffers\AttackFrame;
 use veroxcode\Guardian\Buffers\MovementFrame;
 use veroxcode\Guardian\Guardian;
 use veroxcode\Guardian\User\User;
-use veroxcode\Guardian\Utils\Random;
 
 class EventListener implements Listener
 {
@@ -47,12 +50,12 @@ class EventListener implements Listener
             $data = $packet->trData;
 
             if ($data instanceof UseItemOnEntityTransactionData){
-                $NewBuffer = new AttackFrame(
+                $AttackFrame = new AttackFrame(
                     $this->getServerTick(),
                     $player->getNetworkSession()->getPing(),
                     $user->getLastAttack()
                 );
-                Guardian::getInstance()->getUserManager()->getUser($uuid)->addToAttackBuffer($NewBuffer);
+                Guardian::getInstance()->getUserManager()->getUser($uuid)->addToAttackBuffer($AttackFrame);
             }
         }
 
@@ -61,24 +64,44 @@ class EventListener implements Listener
             $user->preMove($packet, $player);
 
             foreach (Guardian::getInstance()->getCheckManager()->getChecks() as $Check){
-                $Check->onMove($player, $packet, $user);
+                $Check->onMove($packet, $user);
             }
 
-            $NewBuffer = new MovementFrame(
+            $user->postMove($packet, $player);
+
+            $MoveFrame = new MovementFrame(
                 $this->getServerTick(),
                 $packet->getTick(),
                 $packet->getPosition(),
                 new Vector2($packet->getPitch(), $packet->getYaw()),
                 $packet->getHeadYaw(),
-                $event->getOrigin()->getPlayer()->isOnGround(),
-                $event->getOrigin()->getPlayer()->boundingBox
+                $player->isOnGround(),
+                $player->boundingBox,
+                $player->getDirectionVector()
             );
-            $user->addToMovementBuffer($NewBuffer);
+            $user->addToMovementBuffer($MoveFrame);
 
+            if ($packet->hasFlag(PlayerAuthInputFlags::MISSED_SWING)){
+                $AttackFrame = new AttackFrame(
+                    $this->getServerTick(),
+                    $player->getNetworkSession()->getPing(),
+                    $user->getLastAttack()
+                );
+                Guardian::getInstance()->getUserManager()->getUser($uuid)->addToAttackBuffer($AttackFrame);
+            }
+
+        }
+
+        if ($packet instanceof StartGamePacket){
+            $packet->playerMovementSettings = new PlayerMovementSettings(PlayerMovementType::SERVER_AUTHORITATIVE_V2_REWIND, 40, false);
         }
 
     }
 
+    /**
+     * @param EntityDamageByEntityEvent $event
+     * @return void
+     */
     public function onAttack(EntityDamageByEntityEvent $event): void
     {
         $damager = $event->getDamager();
@@ -103,6 +126,10 @@ class EventListener implements Listener
         }
     }
 
+    /**
+     * @param BlockBreakEvent $event
+     * @return void
+     */
     public function onBlockBreak(BlockBreakEvent $event): void
     {
         $player = $event->getPlayer();
@@ -113,14 +140,23 @@ class EventListener implements Listener
         }
     }
 
-    public function onMotion(EntityMotionEvent $event){
+    /**
+     * @param EntityMotionEvent $event
+     * @return void
+     */
+    public function onMotion(EntityMotionEvent $event): void
+    {
         $entity = $event->getEntity();
 
         if ($entity instanceof Player) {
             $user = Guardian::getInstance()->getUserManager()->getUser($entity->getUniqueId()->toString());
             foreach (Guardian::getInstance()->getCheckManager()->getChecks() as $Check){
-                $Check->onMotion($event, $user);
+                if ($user != null){
+                    $Check->onMotion($event, $user);
+                }
             }
+            $user->getMotion()->addVector($event->getVector());
+            $user->resetTicksSinceMotion();
         }
     }
 
@@ -132,7 +168,7 @@ class EventListener implements Listener
     {
         $player = $event->getPlayer();
         $uuid = $player->getUniqueId()->toString();
-        $user = new User($uuid);
+        $user = new User($player, $uuid);
 
         Guardian::getInstance()->getUserManager()->registerUser($user);
 
@@ -153,6 +189,9 @@ class EventListener implements Listener
         Guardian::getInstance()->getUserManager()->unregisterUser($uuid);
     }
 
+    /**
+     * @return int
+     */
     public function getServerTick() : int
     {
         return Guardian::getInstance()->getServer()->getTick();

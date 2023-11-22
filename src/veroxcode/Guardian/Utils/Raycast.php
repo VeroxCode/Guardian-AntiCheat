@@ -9,32 +9,49 @@ use pocketmine\block\Glass;
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\math\Vector3;
 use pocketmine\player\Player;
+use veroxcode\Guardian\Guardian;
 
 class Raycast
 {
 
     /**
-     * @param AxisAlignedBB $boundingBox
+     * @param Vector3 $position
      * @param Vector3 $start
      * @param Vector3 $direction
      * @param float $distance
      * @return bool
      */
-    public static function isBBOnLine(AxisAlignedBB $boundingBox, Vector3 $start, Vector3 $direction, float $distance): bool
+    public static function isBBOnLine(Vector3 $position, Vector3 $start, Vector3 $direction, float $distance): bool
     {
-
-        $rayVec = $start;
-        $rayVec = $rayVec->add(0, 1.62, 0);
+        $boundingBox = self::constructPlayerHitbox($position);
+        $start->add(0, 1.62, 0);
 
         for ($rayDist = 0; $rayDist < $distance; $rayDist += 0.01){
-            $rayVec = $rayVec->addVector($direction->multiply($rayDist));
-            $onRay = $boundingBox->expandedCopy(0.3, 0.3, 0.3)->isVectorInside($rayVec);
+            $checkVec = clone $start;
+            $checkVec = $checkVec->addVector($direction->multiply($rayDist));
+            $onRay = $boundingBox->isVectorInside($checkVec);
 
             if ($onRay){
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * @param Vector3 $position
+     * @return AxisAlignedBB
+     */
+    public static function constructPlayerHitbox(Vector3 $position) : AxisAlignedBB
+    {
+        return new AxisAlignedBB(
+            $position->getX() - (Constants::HITBOX_WIDTH / 2),
+            $position->getY() - 0.3,
+            $position->getZ() - (Constants::HITBOX_WIDTH / 2),
+            $position->getX() + (Constants::HITBOX_WIDTH / 2),
+            $position->getY() + Constants::HITBOX_HEIGHT,
+            $position->getZ() + (Constants::HITBOX_WIDTH / 2)
+        );
     }
 
     /**
@@ -47,28 +64,19 @@ class Raycast
     public static function getBlockOnLine(Player $player, Vector3 $start, Vector3 $direction, float $distance): ?Block
     {
 
-        $rayVec = $start;
-        $rayVec = $rayVec->add(0, 1.62, 0);
-
         for ($rayDist = 0; $rayDist < $distance; $rayDist += 0.01){
-            $rayVec = $rayVec->addVector($direction->multiply($rayDist));
-            $loc = new Vector3($rayVec->getX(), $rayVec->getY(), $rayVec->getZ());
+            $checkVec = clone $start;
+            $checkVec = $checkVec->addVector($direction->multiply($rayDist));
 
-            $eligible = true;
-            $block = $player->getWorld()->getBlock($loc);
+            $block = $player->getWorld()->getBlock($checkVec);
+            $collisions = $block->getCollisionBoxes();
 
-            if (str_contains(strtolower($block->getName()), "grass") && !$block->isFullCube() || str_contains(strtolower($block->getName()), "layer") && !$block->isFullCube()){
-                $eligible = false;
-            }
+            foreach ($collisions as $boundingBox){
+                $eligible = $boundingBox->isVectorInside($checkVec);
 
-            if ($block->isTransparent()){
-                if (!($block instanceof Bed || $block instanceof Glass || $block instanceof Chest)) {
-                    $eligible = false;
+                if ($eligible){
+                    return $block;
                 }
-            }
-
-            if ($block->isSolid() && $eligible){
-                return $block;
             }
         }
         return null;

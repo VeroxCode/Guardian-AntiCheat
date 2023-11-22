@@ -17,15 +17,18 @@ class BadPacketsA extends Check
         parent::__construct("BadPacketsA");
     }
 
-    public function onMove(Player $player, PlayerAuthInputPacket $packet, User $user): void
+    public function onMove(PlayerAuthInputPacket $packet, User $user): void
     {
+
+        $player = $user->getPlayer();
+
         foreach ($user->getMovementBuffer() as $moveFrame){
             if ($moveFrame->getPlayerTick() == $packet->getTick()){
                 if ($user->getViolation($this->getName()) < $this->getMaxViolations()){
                     $user->increaseViolation($this->getName());
                 }else{
                     Notifier::NotifyFlag($player->getName(), $user, $this, $user->getViolation($this->getName()), $this->hasNotify());
-                    Punishments::punishPlayer($player, $this, $user, $player->getPosition(), $this->getPunishment());
+                    Punishments::punishPlayer($this, $user, $player->getPosition());
                 }
             }
         }

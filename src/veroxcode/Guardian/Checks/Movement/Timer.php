@@ -24,17 +24,29 @@ class Timer extends Check
 
     }
 
-    public function onMove(Player $player, PlayerAuthInputPacket $packet, User $user): void
+    public function onMove(PlayerAuthInputPacket $packet, User $user): void
     {
-        $newTickDelay = Guardian::getInstance()->getServer()->getTick() - $packet->getTick();
+
+        $player = $user->getPlayer();
+
+        $serverTps = Guardian::getInstance()->getServer()->getTicksPerSecond();
+        $serverTick = Guardian::getInstance()->getServer()->getTick();
+        $newTickDelay = $serverTick - $packet->getTick();
         $delayDifference = $user->getTickDelay() - $newTickDelay;
 
-        if ($delayDifference >= $this->MAX_TICK_DIFFERENCE){
+        if ($user->getTicksSinceJoin() < 200 || $serverTps < 19){
+            $serverTick = Guardian::getInstance()->getServer()->getTick();
+            $newTickDelay = $serverTick - $packet->getTick();
+            $user->setTickDelay($newTickDelay);
+            return;
+        }
+
+        if ((float) $delayDifference >= ($this->MAX_TICK_DIFFERENCE + (abs(20 - $serverTps) * 2))){
             if ($user->getViolation($this->getName()) < $this->getMaxViolations()){
                 $user->increaseViolation($this->getName(), 1);
             }else{
                 Notifier::NotifyFlag($player->getName(), $user, $this, $user->getViolation($this->getName()), $this->hasNotify());
-                Punishments::punishPlayer($player, $this, $user, $player->getPosition(), $this->getPunishment());
+                Punishments::punishPlayer($this, $user, $player->getPosition());
                 $user->setTickDelay($newTickDelay);
             }
         }else{

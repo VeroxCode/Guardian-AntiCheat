@@ -17,8 +17,10 @@ class ImpossibleRotations extends Check
         parent::__construct("ImpossibleRotations");
     }
 
-    public function onMove(Player $player, PlayerAuthInputPacket $packet, User $user): void
+    public function onMove(PlayerAuthInputPacket $packet, User $user): void
     {
+
+        $player = $user->getPlayer();
 
         $delta = abs($packet->getYaw() - $player->getLocation()->getYaw());
         $delta = Rotations::wrapAngleTo180_float($delta);

@@ -38,7 +38,7 @@ class Check
 
     public function onJoin(PlayerJoinEvent $event, User $user) : void {}
     public function onAttack(EntityDamageByEntityEvent $event, User $user) : void {}
-    public function onMove(Player $player, PlayerAuthInputPacket $packet, User $user) : void {}
+    public function onMove(PlayerAuthInputPacket $packet, User $user) : void {}
     public function onMotion(EntityMotionEvent $event, User $user) : void {}
     public function onBlockBreak(BlockBreakEvent $event, User $user) : void {}
 
