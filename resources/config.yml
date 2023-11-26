@@ -6,7 +6,7 @@
 #Debug
 
 enable-debug: false
-config-version: "1.2.0"
+config-version: "1.2.1"
 prefix: "§f[§eGuardian§f]"
 alert-message-debug: "%PREFIX% §c%PLAYER%§f failed §a%CHECK%§a [§4%VIOLATION%§a]"
 alert-message: "%PREFIX% §c%PLAYER%§f is using §a%CHECK%"
