@@ -48,7 +48,7 @@ class Fly extends Check
         }
 
         if (abs($user->getMotion()->getY()) >= 0){
-            $yMotion += $user->getMotion()->getY();
+            $yMotion += ($user->getMotion()->getY() * 3);
             $user->getMotion()->y = 0;
         }
 

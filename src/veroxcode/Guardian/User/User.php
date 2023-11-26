@@ -162,6 +162,7 @@ class User
 
     public function rewindMovementBuffer(int $ticks = 0): MovementFrame
     {
+        $ticks = Random::clamp(0, PHP_INT_MAX, $ticks);
         $size = count($this->movementBuffer) - 1;
         return $this->movementBuffer[$size - $ticks] ?? $this->movementBuffer[$size - $ticks - 1];
     }
@@ -185,6 +186,7 @@ class User
 
     public function rewindAttackBuffer(int $ticks = 1): AttackFrame
     {
+        $ticks = Random::clamp(0, PHP_INT_MAX, $ticks);
         $size = count($this->attackBuffer) - 1;
         return $this->attackBuffer[$size - $ticks];
     }
