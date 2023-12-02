@@ -1,8 +1,8 @@
 name: Guardian
-version: 1.2.0
+version: 1.2.1
 api: 5.0.0
 main: veroxcode\Guardian\Guardian
-author: VeroxCode
+author: [VeroxCode, UnknownNull]
 
 commands:
   guardian:
