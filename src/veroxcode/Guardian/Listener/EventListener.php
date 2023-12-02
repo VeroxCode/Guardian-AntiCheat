@@ -114,6 +114,10 @@ class EventListener implements Listener
 
         if ($damager instanceof Player){
             $user = Guardian::getInstance()->getUserManager()->getUser($damager->getUniqueId()->toString());
+
+            if ($user === null) {
+                return;
+            }
             foreach (Guardian::getInstance()->getCheckManager()->getChecks() as $Check){
                 $Check->onAttack($event, $user);
             }
@@ -135,6 +139,10 @@ class EventListener implements Listener
         $player = $event->getPlayer();
         $user = Guardian::getInstance()->getUserManager()->getUser($player->getUniqueId()->toString());
 
+        if ($user === null) {
+            return;
+        }
+
         foreach (Guardian::getInstance()->getCheckManager()->getChecks() as $Check){
             $Check->onBlockBreak($event, $user);
         }
@@ -150,6 +158,11 @@ class EventListener implements Listener
 
         if ($entity instanceof Player) {
             $user = Guardian::getInstance()->getUserManager()->getUser($entity->getUniqueId()->toString());
+
+            if ($user === null) {
+                return;
+            }
+
             foreach (Guardian::getInstance()->getCheckManager()->getChecks() as $Check){
                 if ($user != null){
                     $Check->onMotion($event, $user);
