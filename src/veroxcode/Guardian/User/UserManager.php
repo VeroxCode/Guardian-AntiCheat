@@ -48,7 +48,9 @@ class UserManager
     public function getUser(string $uuid) : ?User
     {
         if (isset($this->Users[$uuid])){
-            return $this->Users[$uuid];
+            if ($this->Users[$uuid] !== null){
+                return $this->Users[$uuid];
+            }
         }
         return null;
     }
