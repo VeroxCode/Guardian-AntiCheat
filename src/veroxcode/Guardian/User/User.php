@@ -164,7 +164,7 @@ class User
     {
         $ticks = Random::clamp(0, PHP_INT_MAX, $ticks);
         $size = count($this->movementBuffer) - 1;
-        return $this->movementBuffer[$size - $ticks] ?? $this->movementBuffer[$size - $ticks - 1];
+        return $this->movementBuffer[$size - $ticks];
     }
 
     public function getMovementBuffer(): array
