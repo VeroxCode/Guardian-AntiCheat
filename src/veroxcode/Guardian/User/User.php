@@ -163,8 +163,8 @@ class User
     public function rewindMovementBuffer(int $ticks = 0): MovementFrame
     {
         $ticks = Random::clamp(0, PHP_INT_MAX, $ticks);
-        $size = count($this->movementBuffer) - 1;
-        return $this->movementBuffer[$size - $ticks];
+        $size = count($this->movementBuffer);
+        return $this->movementBuffer[$size - $ticks] ?? $this->movementBuffer[$size - $ticks - 1];
     }
 
     public function getMovementBuffer(): array
