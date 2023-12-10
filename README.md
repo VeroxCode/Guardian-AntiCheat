@@ -19,3 +19,4 @@
 - [ ] NoKnockback
 - [ ] FastEat
 - [ ] Instant Rotations/Killaura
+- [ ] Discord Log/Report
