@@ -42,7 +42,7 @@ class EventListener implements Listener
         $uuid = $player->getUniqueId()->toString();
         $user = Guardian::getInstance()->getUserManager()->getUser($uuid);
 
-        if ($user == null){
+        if ($user == null or $uuid == null){
             return;
         }
 
