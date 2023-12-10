@@ -119,6 +119,10 @@ class Speed extends Check
             $movement = 0.3;
         }
 
+        if ($player->isSneaking() and $player->getArmorInventory()->getLeggings()->hasEnchantment(VanillaEnchantments::SWIFT_SNEAK())){
+            $movement = 0.7;
+        }
+
         if ($player->isUsingItem()){
             $movement = 0.2;
         }
