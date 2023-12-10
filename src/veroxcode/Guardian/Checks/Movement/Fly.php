@@ -67,6 +67,12 @@ class Fly extends Check
             return;
         }
 
+        $LEVITATION = $effects->get(VanillaEffects::LEVITATION());
+        if ($LEVITATION != null){
+            $user->setWaitForGround(true);
+            return;
+        }
+
         if ($player->getWorld()->getBlock($player->getPosition()->add(0, $yMotion, 0))->isSolid() || $user->isWaitForGround()){
             return;
         }
