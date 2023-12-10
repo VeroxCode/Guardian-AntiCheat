@@ -33,6 +33,10 @@ class Fly extends Check
         if ($user->getTicksSinceJoin() < 40 || !$eligibleGamemode  || $player->isGliding() || $player->isSwimming()){
             return;
         }
+        if($player->hasPermission("guardian.bypass")){
+            $user->setWaitForGround(false);
+            return;
+        }
 
         $OldY = $player->getPosition()->getY();
         $NewY = $packet->getPosition()->getY() - 1.62;
