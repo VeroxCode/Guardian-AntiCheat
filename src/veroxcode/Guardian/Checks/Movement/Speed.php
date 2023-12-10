@@ -44,6 +44,12 @@ class Speed extends Check
         if (!$eligibleGamemode || $player->isGliding() || $user->getTicksSinceCorrection() <= 2 || $user->getTicksSinceJoin() < 40){
             return;
         }
+        
+        if ($player->hasPermission("guardian.bypass")){
+            if ($player->isFlying()){
+                return;
+            }
+        }
 
         $previous = $player->getPosition();
         $next = $packet->getPosition();
