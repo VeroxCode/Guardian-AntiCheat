@@ -17,3 +17,6 @@ permissions:
   guardian.notify:
     description: Notify everyone if a Player fails a Check
     default: op
+  guardian.bypass:
+    description: Prevent cheat detection
+    default: op
