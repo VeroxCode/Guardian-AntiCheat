@@ -5,7 +5,7 @@ namespace veroxcode\Guardian\Utils;
 class Constants
 {
     public const PREFIX = "§e[Guardian] §c";
-    public const CONFIG_VERSION = "1.2.0";
+    public const CONFIG_VERSION = "1.2.2";
     public const ATTACK_REACH = 3.6;
     public const CPS_LIMIT = 15;
     public const SPEED_THRESHOLD = 0.1;
