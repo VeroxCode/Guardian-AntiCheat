@@ -60,9 +60,10 @@ class Fly extends Check
 
         $effects = $player->getEffects();
         $jump_boost = $effects->get(VanillaEffects::JUMP_BOOST());
+        $levitation = $effects->get(VanillaEffects::LEVITATION());
         $jump_boost = $jump_boost != null ? $jump_boost->getEffectLevel() : 0;
 
-        if ($jump_boost > 0){
+        if ($jump_boost > 0 || $levitation != null){
             $user->setWaitForGround(true);
             return;
         }

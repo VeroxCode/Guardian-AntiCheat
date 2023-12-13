@@ -35,7 +35,7 @@ class EventListener implements Listener
         $packet = $event->getPacket();
         $player = $event->getOrigin()->getPlayer();
 
-        if ($player == null || Guardian::getInstance()->getUserManager()->getUser($player->getUniqueId()->toString()) == null){
+        if ($player == null){
             return;
         }
 

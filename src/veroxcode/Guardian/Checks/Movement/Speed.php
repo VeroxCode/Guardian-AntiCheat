@@ -4,8 +4,10 @@ namespace veroxcode\Guardian\Checks\Movement;
 
 use pocketmine\block\Block;
 use pocketmine\block\BlockTypeIds;
+use pocketmine\data\bedrock\EnchantmentIds;
 use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\event\entity\EntityMotionEvent;
+use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\math\Facing;
 use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\CorrectPlayerMovePredictionPacket;
@@ -41,7 +43,7 @@ class Speed extends Check
         $player = $user->getPlayer();
         $eligibleGamemode = $player->getGamemode() === GameMode::SURVIVAL() || $player->getGamemode() === GameMode::ADVENTURE();
 
-        if (!$eligibleGamemode || $player->isGliding() || $user->getTicksSinceCorrection() <= 2 || $user->getTicksSinceJoin() < 40){
+        if (!$eligibleGamemode || $player->isGliding() || $player->isFlying() || $user->getTicksSinceCorrection() <= 2 || $user->getTicksSinceJoin() < 40){
             return;
         }
 
@@ -109,6 +111,7 @@ class Speed extends Check
 
     public function getMovement(Player $player, Vector3 $move): float
     {
+        $armorLeggings = $player->getArmorInventory()->getLeggings();
         $movement = 1.0;
 
         if ($player->isSprinting()){
@@ -116,7 +119,7 @@ class Speed extends Check
         }
 
         if ($player->isSneaking()){
-            $movement = 0.3;
+            $movement = Random::clamp(0.3, 1.0, 0.3 + (0.15 * $armorLeggings->getEnchantmentLevel(VanillaEnchantments::SWIFT_SNEAK())));
         }
 
         if ($player->isUsingItem()){

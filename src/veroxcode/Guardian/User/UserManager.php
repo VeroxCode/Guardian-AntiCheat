@@ -2,6 +2,8 @@
 
 namespace veroxcode\Guardian\User;
 
+use veroxcode\Guardian\Guardian;
+
 class UserManager
 {
 
@@ -52,7 +54,10 @@ class UserManager
                 return $this->Users[$uuid];
             }
         }
-        return null;
+
+        $user = new User(Guardian::getInstance()->getServer()->getPlayerByRawUUID($uuid), $uuid);
+        $this->registerUser($user);
+        return $user;
     }
 
 }
