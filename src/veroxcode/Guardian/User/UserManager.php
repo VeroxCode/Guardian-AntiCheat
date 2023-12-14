@@ -55,9 +55,14 @@ class UserManager
             }
         }
 
-        $user = new User(Guardian::getInstance()->getServer()->getPlayerByRawUUID($uuid), $uuid);
-        $this->registerUser($user);
-        return $user;
+        $player = Guardian::getInstance()->getServer()->getPlayerByRawUUID($uuid);
+
+        if ($player != null){
+            $user = new User($player, $uuid);
+            $this->registerUser($user);
+            return $user;
+        }
+        return null;
     }
 
 }
