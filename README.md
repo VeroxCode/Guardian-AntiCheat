@@ -12,10 +12,9 @@
 - [X] BedBreaker/Bedfucker
 - [X] ImpossibleRotations
 - [X] Distance Prediction/Speed
+- [X] FastEat
 - [X] Fly
 
 ### Checks & Features to be made:
 
-- [ ] NoKnockback
-- [ ] FastEat
 - [ ] Instant Rotations/Killaura
