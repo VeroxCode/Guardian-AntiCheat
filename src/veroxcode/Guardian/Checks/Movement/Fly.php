@@ -43,7 +43,7 @@ class Fly extends Check
             $yMotion = 0;
         }
 
-        if ($user->getTicksSinceJump() >= 0 && $user->getTicksSinceJump() <= 5){
+        if ($user->getTicksSinceJump() >= 0 && $user->getTicksSinceJump() <= 5 && ($player->isOnGround() || $player->getWorld()->getBlock($player->getPosition()->add(0, $yMotion, 0))->isSolid())){
             $yMotion += Constants::GRAVITY * $user->getTicksSinceJump();
         }
 

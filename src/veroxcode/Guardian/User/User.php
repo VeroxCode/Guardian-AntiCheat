@@ -58,6 +58,7 @@ class User
     private array $attackBuffer = [];
     private array $violations = [];
     private array $alerts = [];
+    private array $cache = [];
 
     /**
      * @param Player $player
@@ -490,6 +491,16 @@ class User
     public function setWaitForGround(bool $WaitForGround): void
     {
         $this->WaitForGround = $WaitForGround;
+    }
+
+    public function getCache(): array
+    {
+        return $this->cache;
+    }
+
+    public function setCache(array $cache): void
+    {
+        $this->cache = $cache;
     }
 
 }

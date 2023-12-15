@@ -6,7 +6,9 @@ use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityMotionEvent;
 use pocketmine\event\Listener;
+use pocketmine\event\player\PlayerItemConsumeEvent;
 use pocketmine\event\player\PlayerJoinEvent;
+use pocketmine\event\player\PlayerLoginEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\math\Vector2;
@@ -14,6 +16,7 @@ use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
 use pocketmine\network\mcpe\protocol\PlayerAuthInputPacket;
 use pocketmine\network\mcpe\protocol\StartGamePacket;
 use pocketmine\network\mcpe\protocol\types\inventory\UseItemOnEntityTransactionData;
+use pocketmine\network\mcpe\protocol\types\inventory\UseItemTransactionData;
 use pocketmine\network\mcpe\protocol\types\PlayerAuthInputFlags;
 use pocketmine\network\mcpe\protocol\types\PlayerMovementSettings;
 use pocketmine\network\mcpe\protocol\types\PlayerMovementType;
@@ -56,6 +59,12 @@ class EventListener implements Listener
                     $user->getLastAttack()
                 );
                 Guardian::getInstance()->getUserManager()->getUser($uuid)->addToAttackBuffer($AttackFrame);
+            }
+
+            if ($data instanceof UseItemTransactionData){
+                foreach (Guardian::getInstance()->getCheckManager()->getChecks() as $Check){
+                    $Check->onUseItem($packet, $user);
+                }
             }
         }
 
@@ -173,11 +182,24 @@ class EventListener implements Listener
         }
     }
 
+    public function onConsume(PlayerItemConsumeEvent $event): void
+    {
+        $user = Guardian::getInstance()->getUserManager()->getUser($event->getPlayer()->getUniqueId()->toString());
+
+        if ($user === null) {
+            return;
+        }
+
+        foreach (Guardian::getInstance()->getCheckManager()->getChecks() as $Check){
+            $Check->onConsume($event, $user);
+        }
+    }
+
     /**
-     * @param PlayerJoinEvent $event
+     * @param PlayerLoginEvent $event
      * @return void
      */
-    public function onJoin(PlayerJoinEvent $event) : void
+    public function onJoin(PlayerLoginEvent $event) : void
     {
         $player = $event->getPlayer();
         $uuid = $player->getUniqueId()->toString();

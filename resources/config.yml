@@ -6,7 +6,7 @@
 #Debug
 
 enable-debug: false
-config-version: "1.2.1"
+config-version: "1.2.2"
 prefix: "§f[§eGuardian§f]"
 alert-message-debug: "%PREFIX% §c%PLAYER%§f failed §a%CHECK%§a [§4%VIOLATION%§a]"
 alert-message: "%PREFIX% §c%PLAYER%§f is using §a%CHECK%"
@@ -81,3 +81,8 @@ Fly-notify: true
 Fly-MaxViolations: 30
 Fly-AlertFrequency: 10
 Fly-Punishment: "Kick"
+
+#FastEat
+
+FastEat-notify: true
+FastEat-AlertFrequency: 10

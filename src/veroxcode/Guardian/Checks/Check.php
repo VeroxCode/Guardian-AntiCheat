@@ -5,7 +5,10 @@ namespace veroxcode\Guardian\Checks;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityMotionEvent;
+use pocketmine\event\player\PlayerItemConsumeEvent;
 use pocketmine\event\player\PlayerJoinEvent;
+use pocketmine\event\player\PlayerLoginEvent;
+use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
 use pocketmine\network\mcpe\protocol\PlayerAuthInputPacket;
 use pocketmine\player\Player;
 use veroxcode\Guardian\Guardian;
@@ -36,11 +39,13 @@ class Check
         $this->punishment = $config->get($name . "-Punishment") == null ? "Block" : $config->get($name . "-Punishment");
     }
 
-    public function onJoin(PlayerJoinEvent $event, User $user) : void {}
+    public function onJoin(PlayerLoginEvent $event, User $user) : void {}
     public function onAttack(EntityDamageByEntityEvent $event, User $user) : void {}
     public function onMove(PlayerAuthInputPacket $packet, User $user) : void {}
     public function onMotion(EntityMotionEvent $event, User $user) : void {}
     public function onBlockBreak(BlockBreakEvent $event, User $user) : void {}
+    public function onUseItem(InventoryTransactionPacket $packet, User $user) : void {}
+    public function onConsume(PlayerItemConsumeEvent $event, User $user) : void {}
 
     /**
      * @return float

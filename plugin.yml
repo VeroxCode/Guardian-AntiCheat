@@ -1,5 +1,5 @@
 name: Guardian
-version: 1.2.2
+version: 1.3.0
 api: 5.0.0
 main: veroxcode\Guardian\Guardian
 author: VeroxCode
