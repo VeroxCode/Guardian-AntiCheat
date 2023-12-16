@@ -15,6 +15,9 @@
 - [X] FastEat
 - [X] Fly
 
-### Checks & Features to be made:
+# Test Server
 
-- [ ] Instant Rotations/Killaura
+## We now have a Test Server open 24/7 for everyone to test out Guardian
+### IP/Port: guardian.apexmc.co | 26614
+### The Server might show up as offline. this is most of the time a visual error.
+![image](https://github.com/VeroxCode/Guardian-AntiCheat/assets/18149401/7b431955-1ee6-485b-af29-d98896830726)
