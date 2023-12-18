@@ -6,6 +6,7 @@ use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\player\Player;
 use veroxcode\Guardian\Checks\Check;
+use veroxcode\Guardian\Checks\CheckManager;
 use veroxcode\Guardian\Checks\Notifier;
 use veroxcode\Guardian\Guardian;
 use veroxcode\Guardian\User\User;
@@ -18,7 +19,7 @@ class AutoClicker extends Check
 
     public function __construct()
     {
-        parent::__construct("AutoClicker");
+        parent::__construct("AutoClicker", CheckManager::COMBAT);
 
         $config = Guardian::getInstance()->getSavedConfig();
         $this->CPS_LIMIT = $config->get("CPS-Limit") == null ? Constants::CPS_LIMIT : $config->get("CPS-Limit");

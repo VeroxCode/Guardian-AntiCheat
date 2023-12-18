@@ -29,9 +29,8 @@ class Raycast
         for ($rayDist = 0; $rayDist < $distance; $rayDist += 0.01){
             $checkVec = clone $start;
             $checkVec = $checkVec->addVector($direction->multiply($rayDist));
-            $onRay = $boundingBox->isVectorInside($checkVec);
 
-            if ($onRay){
+            if ($boundingBox->isVectorInside($checkVec)){
                 return true;
             }
         }
@@ -46,10 +45,10 @@ class Raycast
     {
         return new AxisAlignedBB(
             $position->getX() - (Constants::HITBOX_WIDTH / 2),
-            $position->getY() - 0.3,
+            $position->getY() - (Constants::HITBOX_HEIGHT / 2),
             $position->getZ() - (Constants::HITBOX_WIDTH / 2),
             $position->getX() + (Constants::HITBOX_WIDTH / 2),
-            $position->getY() + Constants::HITBOX_HEIGHT,
+            $position->getY() + (Constants::HITBOX_HEIGHT / 2),
             $position->getZ() + (Constants::HITBOX_WIDTH / 2)
         );
     }

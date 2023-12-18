@@ -10,6 +10,7 @@ use pocketmine\network\mcpe\protocol\types\PlayerAuthInputFlags;
 use pocketmine\player\GameMode;
 use pocketmine\player\Player;
 use veroxcode\Guardian\Checks\Check;
+use veroxcode\Guardian\Checks\CheckManager;
 use veroxcode\Guardian\Checks\Notifier;
 use veroxcode\Guardian\Checks\Punishments;
 use veroxcode\Guardian\User\User;
@@ -21,7 +22,7 @@ class Fly extends Check
 
     public function __construct()
     {
-        parent::__construct("Fly");
+        parent::__construct("Fly", CheckManager::MOVEMENT);
     }
 
     public function onMove(PlayerAuthInputPacket $packet, User $user): void

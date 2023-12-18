@@ -23,6 +23,7 @@ use pocketmine\network\mcpe\protocol\types\PlayerMovementType;
 use pocketmine\player\Player;
 use veroxcode\Guardian\Buffers\AttackFrame;
 use veroxcode\Guardian\Buffers\MovementFrame;
+use veroxcode\Guardian\Checks\Check;
 use veroxcode\Guardian\Guardian;
 use veroxcode\Guardian\User\User;
 
@@ -63,7 +64,7 @@ class EventListener implements Listener
 
             if ($data instanceof UseItemTransactionData){
                 foreach (Guardian::getInstance()->getCheckManager()->getChecks() as $Check){
-                    $Check->onUseItem($packet, $user);
+                    if ($Check->isEnabled()) $Check->onUseItem($packet, $user);
                 }
             }
         }
@@ -73,7 +74,7 @@ class EventListener implements Listener
             $user->preMove($packet, $player);
 
             foreach (Guardian::getInstance()->getCheckManager()->getChecks() as $Check){
-                $Check->onMove($packet, $user);
+                if ($Check->isEnabled()) $Check->onMove($packet, $user);
             }
 
             $user->postMove($packet, $player);
@@ -128,7 +129,7 @@ class EventListener implements Listener
                 return;
             }
             foreach (Guardian::getInstance()->getCheckManager()->getChecks() as $Check){
-                $Check->onAttack($event, $user);
+                if ($Check->isEnabled()) $Check->onAttack($event, $user);
             }
             $user->setLastAttack($this->getServerTick());
 
@@ -153,7 +154,7 @@ class EventListener implements Listener
         }
 
         foreach (Guardian::getInstance()->getCheckManager()->getChecks() as $Check){
-            $Check->onBlockBreak($event, $user);
+            if ($Check->isEnabled()) $Check->onBlockBreak($event, $user);
         }
     }
 
@@ -174,7 +175,7 @@ class EventListener implements Listener
 
             foreach (Guardian::getInstance()->getCheckManager()->getChecks() as $Check){
                 if ($user != null){
-                    $Check->onMotion($event, $user);
+                    if ($Check->isEnabled()) $Check->onMotion($event, $user);
                 }
             }
             $user->getMotion()->addVector($event->getVector());
@@ -191,7 +192,7 @@ class EventListener implements Listener
         }
 
         foreach (Guardian::getInstance()->getCheckManager()->getChecks() as $Check){
-            $Check->onConsume($event, $user);
+            if ($Check->isEnabled()) $Check->onConsume($event, $user);
         }
     }
 
@@ -208,7 +209,7 @@ class EventListener implements Listener
         Guardian::getInstance()->getUserManager()->registerUser($user);
 
         foreach (Guardian::getInstance()->getCheckManager()->getChecks() as $Check){
-            $Check->onJoin($event, $user);
+            if ($Check->isEnabled()) $Check->onJoin($event, $user);
         }
     }
 

@@ -7,6 +7,7 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\network\mcpe\protocol\types\InputMode;
 use pocketmine\player\Player;
 use veroxcode\Guardian\Checks\Check;
+use veroxcode\Guardian\Checks\CheckManager;
 use veroxcode\Guardian\Checks\Notifier;
 use veroxcode\Guardian\Guardian;
 use veroxcode\Guardian\User\User;
@@ -18,7 +19,7 @@ class Hitbox extends Check
 
     public function __construct()
     {
-        parent::__construct("Hitbox");
+        parent::__construct("Hitbox", CheckManager::COMBAT);
     }
 
     public function onAttack(EntityDamageByEntityEvent $event, User $user): void
@@ -33,7 +34,7 @@ class Hitbox extends Check
                 return;
             }
 
-            $ray = Raycast::isBBOnLine($victim->getPosition(), $player->getPosition(), $player->getDirectionVector(), $distance);
+            $ray = Raycast::isBBOnLine($victim->getPosition(), $player->getPosition(), $player->getDirectionVector(), 6);
             if ($ray){
                 return;
             }
@@ -50,7 +51,7 @@ class Hitbox extends Check
 
             for ($i = 0; $i < $rewindTicks; $i++) {
                 $rewindVictim = $victimUser->rewindMovementBuffer($i);
-                $rewindVec = Raycast::isBBOnLine($rewindVictim->getPosition(), $player->getPosition(), $player->getDirectionVector(), $distance);
+                $rewindVec = Raycast::isBBOnLine($rewindVictim->getPosition(), $player->getPosition(), $player->getDirectionVector(), 6);
 
                 if ($rewindVec) {
                     $user->decreaseViolation($this->getName());

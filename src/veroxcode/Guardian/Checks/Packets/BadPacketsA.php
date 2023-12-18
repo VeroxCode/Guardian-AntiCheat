@@ -5,6 +5,7 @@ namespace veroxcode\Guardian\Checks\Packets;
 use pocketmine\network\mcpe\protocol\PlayerAuthInputPacket;
 use pocketmine\player\Player;
 use veroxcode\Guardian\Checks\Check;
+use veroxcode\Guardian\Checks\CheckManager;
 use veroxcode\Guardian\Checks\Notifier;
 use veroxcode\Guardian\Checks\Punishments;
 use veroxcode\Guardian\User\User;
@@ -14,7 +15,7 @@ class BadPacketsA extends Check
 
     public function __construct()
     {
-        parent::__construct("BadPacketsA");
+        parent::__construct("BadPacketsA", CheckManager::PLAYER);
     }
 
     public function onMove(PlayerAuthInputPacket $packet, User $user): void

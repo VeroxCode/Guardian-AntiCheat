@@ -16,6 +16,7 @@ use pocketmine\network\mcpe\protocol\types\PlayerAuthInputFlags;
 use pocketmine\player\GameMode;
 use pocketmine\player\Player;
 use veroxcode\Guardian\Checks\Check;
+use veroxcode\Guardian\Checks\CheckManager;
 use veroxcode\Guardian\Checks\Notifier;
 use veroxcode\Guardian\Checks\Punishments;
 use veroxcode\Guardian\User\User;
@@ -28,7 +29,7 @@ class Speed extends Check
 
     public function __construct()
     {
-        parent::__construct("Speed");
+        parent::__construct("Speed", CheckManager::MOVEMENT);
     }
 
     public function onMotion(EntityMotionEvent $event, User $user): void
@@ -92,7 +93,8 @@ class Speed extends Check
                 $user->increaseViolation($this->getName());
 
                 if ($this->getPunishment() == "Cancel"){
-                    Punishments::punishPlayer($this, $user, $player->getPosition());
+                    Notifier::NotifyFlag($player->getName(), $user, $this, $user->getViolation($this->getName()), $this->hasNotify());
+                    Punishments::punishPlayer($this, $user, $player->getPosition(), false);
                 }else{
                     if ($player->isUsingItem()){
                         $player->teleport($player->getPosition());

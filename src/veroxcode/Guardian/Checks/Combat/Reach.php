@@ -8,6 +8,7 @@ use pocketmine\math\Vector3;
 use pocketmine\player\GameMode;
 use pocketmine\player\Player;
 use veroxcode\Guardian\Checks\Check;
+use veroxcode\Guardian\Checks\CheckManager;
 use veroxcode\Guardian\Checks\Notifier;
 use veroxcode\Guardian\Guardian;
 use veroxcode\Guardian\User\User;
@@ -21,7 +22,7 @@ class Reach extends Check
 
     public function __construct()
     {
-        parent::__construct("Reach");
+        parent::__construct("Reach", CheckManager::COMBAT);
 
         $config = Guardian::getInstance()->getSavedConfig();
         $this->MAX_REACH = $config->get("Maximum-Reach") == null ? Constants::ATTACK_REACH : $config->get("Maximum-Reach");

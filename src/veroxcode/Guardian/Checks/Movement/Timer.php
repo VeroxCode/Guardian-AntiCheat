@@ -5,6 +5,7 @@ namespace veroxcode\Guardian\Checks\Movement;
 use pocketmine\network\mcpe\protocol\PlayerAuthInputPacket;
 use pocketmine\player\Player;
 use veroxcode\Guardian\Checks\Check;
+use veroxcode\Guardian\Checks\CheckManager;
 use veroxcode\Guardian\Checks\Notifier;
 use veroxcode\Guardian\Checks\Punishments;
 use veroxcode\Guardian\Guardian;
@@ -17,7 +18,7 @@ class Timer extends Check
 
     public function __construct()
     {
-        parent::__construct("Timer");
+        parent::__construct("Timer", CheckManager::MOVEMENT);
 
         $config = Guardian::getInstance()->getSavedConfig();
         $this->MAX_TICK_DIFFERENCE = $config->get("Timer-TickDifference") == null ? 10 : $config->get("Timer-TickDifference");

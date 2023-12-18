@@ -1,9 +1,9 @@
-##USEFUL INFORMATION
-##MaxViolation: Amount of Times a Player has to fail a Check before he gets punished
-##Available Punishments: Cancel, Kick, Ban
-##Combat Checks can not have a different Punishment
+## USEFUL INFORMATION
+## MaxViolation: Amount of Times a Player has to fail a Check before he gets punished
+## Available Punishments: Cancel, Kick, Ban
+## Combat Checks can not have a different Punishment
 
-#Debug
+# Debug
 
 enable-debug: false
 config-version: "1.2.2"
@@ -13,76 +13,96 @@ alert-message: "%PREFIX% §c%PLAYER%§f is using §a%CHECK%"
 kick-message: "%PREFIX% §fYou have been Kicked for Cheating!"
 ban-message: "%PREFIX% §fYou have been Banned for Cheating!"
 
-#Reach
+# Reach
 
 Reach-notify: true
+Reach-enabled: true
 Maximum-Reach: 3.6
 Reach-MaxViolations: 3
 Reach-AlertFrequency: 8
 
-#Hitbox
+# Hitbox
 
 Hitbox-notify: true
+Hitbox-enabled: true
 Hitbox-MaxViolations: 3
 Hitbox-AlertFrequency: 8
 
-#Timer
+# Timer
 
 Timer-notify: true
+Timer-enabled: true
 Timer-MaxViolations: 1
 Timer-AlertFrequency: 5
 Timer-Punishment: "Cancel"
 Timer-TickDifference: 3
 
-#AutoClicker
+# AutoClicker
 
 AutoClicker-notify: true
+AutoClicker-enabled: true
 AutoClicker-MaxViolations: 3
 AutoClicker-AlertFrequency: 25
 CPS-Limit: 15
 
-#BadPacketsA
+# BadPacketsA
 
 BadPacketsA-notify: true
+BadPacketsA-enabled: true
 BadPacketsA-MaxViolations: 5
 BadPacketsA-AlertFrequency: 10
 BadPacketsA-Punishment: "Cancel"
 
-#BadPacketsB
+# BadPacketsB
 
 BadPacketsB-notify: true
+BadPacketsB-enabled: true
 BadPacketsB-MaxViolations: 5
 BadPacketsB-AlertFrequency: 10
 BadPacketsB-Punishment: "Cancel"
 
-#ImpossibleRotations
+# ImpossibleRotations
 
 ImpossibleRotations-notify: true
+ImpossibleRotations-enabled: true
 ImpossibleRotations-MaxViolations: 8
 ImpossibleRotations-AlertFrequency: 20
 
-#GhostHand
+# GhostHand
 
 GhostHand-notify: true
+GhostHand-enabled: true
 GhostHand-MaxViolations: 5
 GhostHand-AlertFrequency: 10
 GhostHand-Punishment: "Cancel"
 
-#Speed
+# Speed
 
 Speed-notify: true
+Speed-enabled: true
 Speed-MaxViolations: 20
 Speed-AlertFrequency: 8
 Speed-Punishment: "Cancel"
 
-#Fly
+# Fly
 
 Fly-notify: true
+Fly-enabled: true
 Fly-MaxViolations: 30
 Fly-AlertFrequency: 10
 Fly-Punishment: "Kick"
 
-#FastEat
+# FastEat
 
 FastEat-notify: true
+FastEat-enabled: true
+FastEat-MaxViolations: 30
 FastEat-AlertFrequency: 10
+
+# RotationsA
+
+RotationsA-notify: true
+RotationsA-enabled: true
+RotationsA-MaxViolations: 8
+RotationsA-AlertFrequency: 20
+Angle-Difference: 45

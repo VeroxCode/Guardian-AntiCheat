@@ -7,13 +7,10 @@ use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
-use pocketmine\plugin\PluginDescription;
-use pocketmine\plugin\PluginLoader;
-use pocketmine\plugin\ResourceProvider;
-use pocketmine\Server;
 use pocketmine\utils\Config;
 use veroxcode\Guardian\Checks\CheckManager;
 use veroxcode\Guardian\Listener\EventListener;
+use veroxcode\Guardian\Panel\AdminPanel;
 use veroxcode\Guardian\User\UserManager;
 use veroxcode\Guardian\Utils\Constants;
 
@@ -36,7 +33,8 @@ class Guardian extends PluginBase implements \pocketmine\event\Listener
         $this->config = new Config($this->getDataFolder() . "SavedConfig.yml", Config::YAML);
 
         foreach ($default->getAll(true) as $key){
-            if ($this->getSavedConfig()->get($key) == null){
+            if ($this->getSavedConfig()->get($key) === null){
+                $this->getServer()->getLogger()->warning("missing $key");
                 $this->getSavedConfig()->set($key, $default->get($key));
             }
         }
@@ -49,6 +47,11 @@ class Guardian extends PluginBase implements \pocketmine\event\Listener
         $this->userManager = new UserManager();
         $this->checkManager = new CheckManager();
 
+    }
+
+    public function onDisable(): void
+    {
+        $this->getSavedConfig()->save();
     }
 
     /**
@@ -67,48 +70,25 @@ class Guardian extends PluginBase implements \pocketmine\event\Listener
 
        if ($command->getName() == "guardian") {
            if (isset($args[0])) {
-               if ($args[0] == "help"){
-                   $sender->sendMessage(
-                       $prefix . "§f help §8- Lists all Commands\n"
-                       .   $prefix . "§f debug §8- Enable/Disable Debug Mode\n"
-                       .   $prefix . "§f notifications §8- Enable/Disable Notifications for yourself\n"
-                       .   $prefix . "§f notify <Check> §8- Enable/Disable Notifications for certain Checks");
+
+               switch ($args[0]){
+                   case "help":
+                       $sender->sendMessage(
+                           "$prefix §fhelp §8- Lists all Commands\n 
+                       $prefix §fpanel §8- Opens the Admin Panel\n");
+
                        $this->getSavedConfig()->save();
                        return true;
-                   }
-
-               if ($args[0] == "debug"){
-                   $debug = $this->getSavedConfig()->get("enable-debug");
-                   $this->getSavedConfig()->set("enable-debug", !$debug);
-                   $sender->sendMessage($prefix . " §8Done.");
-                   $this->getSavedConfig()->save();
-                   return true;
-               }
-
-               if ($args[0] == "notify"){
-                   if (!isset($args[1])) {
-                       return false;
-                   }
-
-                   $newnotify = $this->getSavedConfig()->get($args[1] . "-notify");
-                   if ($this->getCheckManager()->getCheckByName($args[1]) != null){
-                       $this->getCheckManager()->getCheckByName($args[1])->setNotify(!$newnotify);
-                       $this->getSavedConfig()->set($args[1] . "-notify", !$newnotify);
-                       $sender->sendMessage($prefix . " §8Done.");
-                       $this->getSavedConfig()->save();
-                       return true;
-                   }
-               }
-
-               if ($args[0] == "notifications"){
-                    if ($sender instanceof Player){
-                        $uuid = $sender->getUniqueId()->toString();
-                        $user = $this->getUserManager()->getUser($uuid);
-                        $notifications = $user->hasNotifications();
-                        $user->setNotifications(!$notifications);
-                        $sender->sendMessage($prefix . " §8Done.");
-                        return true;
-                    }
+                   case "panel":
+                       if ($sender instanceof Player) {
+                           if ($sender->hasPermission("guardian.admin")) {
+                               AdminPanel::open($sender);
+                               return true;
+                           }
+                       }
+                       break;
+                   default:
+                       break;
                }
            }
        }

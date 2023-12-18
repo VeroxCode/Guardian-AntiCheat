@@ -3,6 +3,7 @@
 namespace veroxcode\Guardian\User;
 
 use pocketmine\math\Facing;
+use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\PlayerAuthInputPacket;
 use pocketmine\network\mcpe\protocol\types\PlayerAuthInputFlags;
@@ -23,6 +24,9 @@ class User
     private Vector3 $serverPosition;
     private Vector3 $serverMotion;
     private Vector3 $moveDelta;
+
+    private Vector2 $rotation;
+    private Vector2 $oldRotation;
 
     private Player $player;
     private string $uuid;
@@ -54,6 +58,7 @@ class User
     private int $tickDelay = 0;
     private int $input = 0;
 
+    private array $totalviolations = [];
     private array $movementBuffer = [];
     private array $attackBuffer = [];
     private array $violations = [];
@@ -73,12 +78,15 @@ class User
         $this->serverPosition = $player->getPosition();
         $this->serverMotion = Vector3::zero();
         $this->lastGround = $player->getPosition()->getY();
+        $this->oldRotation = new Vector2(0, 0);
+        $this->rotation = new Vector2($player->getLocation()->getPitch(), $player->getLocation()->getYaw());
 
         $config = Guardian::getInstance()->getSavedConfig();
         foreach (Guardian::getInstance()->getCheckManager()->getChecks() as $Check){
 
             $frequency = $config->get($Check->getName() . "-AlertFrequency");
 
+            $this->totalviolations[$Check->getName()] = 0.0;
             $this->violations[$Check->getName()] = 0.0;
             $this->alerts[$Check->getName()] = $frequency;
         }
@@ -92,6 +100,8 @@ class User
         $this->player = $player;
         $this->setMoveForward($moveForward);
         $this->setMoveStrafe($moveStrafe);
+        $this->setOldRotation(clone $this->getRotation());
+        $this->setRotation(new Vector2($packet->getPitch(), $packet->getYaw()));
 
         if ($player->isOnGround()){
             $this->lastGround = $packet->getPosition()->getY();
@@ -198,9 +208,15 @@ class User
         return $this->attackBuffer;
     }
 
+    public function setViolation(string $Check, $amount = 1): void
+    {
+        $this->violations[$Check] = Random::clamp(0, PHP_INT_MAX, $amount);
+    }
+
     public function increaseViolation(string $Check, $amount = 1): void
     {
         $this->violations[$Check] = Random::clamp(0, PHP_INT_MAX, $this->violations[$Check] + $amount);
+        $this->totalviolations[$Check] = Random::clamp(0, PHP_INT_MAX, $this->totalviolations[$Check] + $amount);
     }
 
     public function decreaseViolation(string $Check, $amount = 1): void
@@ -212,6 +228,12 @@ class User
     {
         $this->violations[$Check] = 0;
     }
+
+    public function getTotalViolation(string $Check) : float
+    {
+        return $this->totalviolations[$Check];
+    }
+
 
     public function getViolation(string $Check) : float
     {
@@ -501,6 +523,26 @@ class User
     public function setCache(array $cache): void
     {
         $this->cache = $cache;
+    }
+
+    public function getRotation(): Vector2
+    {
+        return $this->rotation;
+    }
+
+    public function setRotation(Vector2 $rotation): void
+    {
+        $this->rotation = $rotation;
+    }
+
+    public function getOldRotation(): Vector2
+    {
+        return $this->oldRotation;
+    }
+
+    public function setOldRotation(Vector2 $oldRotation): void
+    {
+        $this->oldRotation = $oldRotation;
     }
 
 }

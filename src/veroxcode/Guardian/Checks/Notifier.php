@@ -21,7 +21,7 @@ class Notifier
         $config = Guardian::getInstance()->getSavedConfig();
         $user->increaseAlertCount($Check->getName());
 
-        if ($user->getAlertCount($Check->getName()) < Guardian::getInstance()->getSavedConfig()->get($Check->getName() . "-AlertFrequency")){
+        if ($user->getAlertCount($Check->getName()) < $Check->getAlertFrequency()){
             return;
         }
 
