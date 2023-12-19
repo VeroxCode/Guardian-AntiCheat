@@ -2,11 +2,11 @@
 
 namespace veroxcode\Guardian\Panel;
 
-use jojoe77777\FormAPI\CustomForm;
-use jojoe77777\FormAPI\SimpleForm;
 use pocketmine\player\Player;
 use veroxcode\Guardian\Checks\Check;
 use veroxcode\Guardian\Checks\CheckManager;
+use veroxcode\Guardian\FormAPI\CustomForm;
+use veroxcode\Guardian\FormAPI\SimpleForm;
 use veroxcode\Guardian\Guardian;
 
 class AdminPanel
