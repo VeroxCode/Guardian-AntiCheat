@@ -42,9 +42,6 @@ class Reach extends Check
                 return;
             }
 
-            $victimUUID = $victim->getUniqueId()->toString();
-            $victimUser = Guardian::getInstance()->getUserManager()->getUser($victimUUID);
-
             $rayVec = Raycast::isBBOnLine($victim->getPosition(), $player->getPosition(), $player->getDirectionVector(), $this->MAX_REACH);
 
             if ($rayVec){
@@ -54,21 +51,16 @@ class Reach extends Check
             $ping = $player->getNetworkSession()->getPing();
             $rewindTicks = ceil($ping / 50) + 3;
 
-            $victimPing = $victimUser->getPlayer()->getNetworkSession()->getPing();
-            $victimTicks = ceil($victimPing / 50) + 2;
-
             for ($i = 0; $i < $rewindTicks; $i++) {
-                for ($j = 0; $i < $victimTicks; $j++) {
-                    $rewindVictim = $victimUser->rewindMovementBuffer($j);
-                    $playerXZ = new Vector3($player->getPosition()->getX(), 0, $player->getPosition()->getZ());
-                    $victimXZ = new Vector3($rewindVictim->getPosition()->getX(), 0, $rewindVictim->getPosition()->getZ());
-                    $distXZ = $playerXZ->distance($victimXZ);
-                    $distY = abs($player->getPosition()->getY() - $rewindVictim->getPosition()->getY());
+                $rewindUser = $user->rewindMovementBuffer($i);
+                $playerXZ = new Vector3($rewindUser->getPosition()->getX(), 0, $rewindUser->getPosition()->getZ());
+                $victimXZ = new Vector3($victim->getPosition()->getX(), 0, $victim->getPosition()->getZ());
+                $distXZ = $playerXZ->distance($victimXZ);
+                $distY = abs($player->getPosition()->getY() - $victim->getPosition()->getY());
 
-                    if ($distXZ < Constants::ATTACK_REACH && $distY < Constants::ATTACK_REACH + 0.6) {
+                    if ($distXZ < Constants::ATTACK_REACH && $distY < Constants::ATTACK_REACH + 1.62) {
                         $user->decreaseViolation($this->getName());
                         return;
-                    }
                 }
 
             }

@@ -143,7 +143,7 @@ class User
 
     public function postMove(PlayerAuthInputPacket $packet, Player $player): void
     {
-        if ($packet->hasFlag(PlayerAuthInputFlags::START_JUMPING)){
+        if ($packet->hasFlag(PlayerAuthInputFlags::START_JUMPING) && $player->isOnGround() || $player->getWorld()->getBlock($player->getPosition()->add(0, $this->motion->y, 0))->isSolid()){
             $this->ticksSinceJump = 0;
             $this->lastJumpingHeight = $packet->getPosition()->getY();
         }
