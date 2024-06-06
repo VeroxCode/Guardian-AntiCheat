@@ -9,6 +9,11 @@ use pocketmine\block\Glass;
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\math\Vector3;
 use pocketmine\player\Player;
+use pocketmine\world\particle\EntityFlameParticle;
+use pocketmine\world\particle\FlameParticle;
+use pocketmine\world\particle\HeartParticle;
+use pocketmine\world\particle\LavaDripParticle;
+use pocketmine\world\World;
 use veroxcode\Guardian\Guardian;
 
 class Raycast
@@ -26,7 +31,7 @@ class Raycast
         $boundingBox = self::constructPlayerHitbox($position);
         $start->add(0, 1.62, 0);
 
-        for ($rayDist = 0; $rayDist < $distance; $rayDist += 0.01){
+        for ($rayDist = 0; $rayDist < 6; $rayDist += 0.01){
             $checkVec = clone $start;
             $checkVec = $checkVec->addVector($direction->multiply($rayDist));
 
@@ -43,6 +48,8 @@ class Raycast
      */
     public static function constructPlayerHitbox(Vector3 $position) : AxisAlignedBB
     {
+        $position->add(0, (Constants::HITBOX_HEIGHT / 2), 0);
+
         return new AxisAlignedBB(
             $position->getX() - (Constants::HITBOX_WIDTH / 2),
             $position->getY() - (Constants::HITBOX_HEIGHT / 2),
@@ -62,6 +69,7 @@ class Raycast
      */
     public static function getBlockOnLine(Player $player, Vector3 $start, Vector3 $direction, float $distance): ?Block
     {
+        $start->add(0, 1.62, 0);
 
         for ($rayDist = 0; $rayDist < $distance; $rayDist += 0.01){
             $checkVec = clone $start;

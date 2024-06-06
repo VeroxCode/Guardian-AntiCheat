@@ -12,6 +12,7 @@ use veroxcode\Guardian\Checks\Movement\Speed;
 use veroxcode\Guardian\Checks\Movement\Timer;
 use veroxcode\Guardian\Checks\Packets\BadPacketsA;
 use veroxcode\Guardian\Checks\Packets\BadPacketsB;
+use veroxcode\Guardian\Checks\Packets\BadPacketsC;
 use veroxcode\Guardian\Checks\World\FastEat;
 use veroxcode\Guardian\Checks\World\GhostHand;
 
@@ -36,7 +37,8 @@ class CheckManager
         $this->Checks[] = new AutoClicker();
         $this->Checks[] = new BadPacketsA();
         $this->Checks[] = new BadPacketsB();
-        $this->Checks[] = new GhostHand();
+        $this->Checks[] = new BadPacketsC();
+        //$this->Checks[] = new GhostHand();
         $this->Checks[] = new ImpossibleRotations();
         $this->Checks[] = new FastEat();
         $this->Checks[] = new Speed();

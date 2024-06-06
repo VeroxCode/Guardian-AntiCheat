@@ -43,10 +43,16 @@ class GhostHand extends Check
             return;
         }
 
+        $rayBlock = Raycast::getBlockOnLine($player, $player->getPosition(), $player->getDirectionVector(), 7);
+        if ($rayBlock === $block){
+            $user->decreaseViolation($this->getName());
+            return;
+        }
+
         for ($i = 0; $i < $rewindTicks; $i++) {
             $rewindUser = $user->rewindMovementBuffer($i);
             $distance = $rewindUser->getPosition()->distance($block->getPosition());
-            $rayBlock = Raycast::getBlockOnLine($player, $rewindUser->getPosition(), $rewindUser->getDirection(), $distance + 0.3);
+            $rayBlock = Raycast::getBlockOnLine($player, $rewindUser->getPosition(), $rewindUser->getDirection(), 7);
 
             if ($rayBlock != null){
                 if ($rayBlock === $block){

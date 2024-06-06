@@ -4,6 +4,9 @@ namespace veroxcode\Guardian\Checks\Movement;
 
 use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\event\entity\EntityMotionEvent;
+use pocketmine\item\Armor;
+use pocketmine\item\ItemTypeIds;
+use pocketmine\item\VanillaItems;
 use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\PlayerAuthInputPacket;
 use pocketmine\network\mcpe\protocol\types\PlayerAuthInputFlags;
@@ -31,7 +34,7 @@ class Fly extends Check
         $player = $user->getPlayer();
         $eligibleGamemode = $player->getGamemode() === GameMode::SURVIVAL() || $player->getGamemode() === GameMode::ADVENTURE();
 
-        if ($user->getTicksSinceJoin() < 40 || !$eligibleGamemode  || $player->isGliding() || $player->isSwimming()){
+        if ($user->getTicksSinceDamage() < 15 || $user->getTicksSinceJoin() < 40 || !$eligibleGamemode  || ($player->isGliding() && $player->getArmorInventory()->getChestplate()->getTypeId() === ItemTypeIds::ELYTRA)){
             return;
         }
 

@@ -45,6 +45,7 @@ class User
     private int $ticksSinceCorrection = 0;
     private int $ticksSinceLanding = 0;
     private int $ticksSinceMotion = 0;
+    private int $ticksSinceDamage = 0;
     private int $ticksSinceJump = 0;
     private int $ticksSinceJoin = 0;
     private int $ticksSinceStep = 0;
@@ -123,6 +124,7 @@ class User
             $this->ticksSinceStep = 0;
         }
 
+        $this->ticksSinceDamage++;
         $this->ticksSinceJump++;
         $this->ticksSinceJoin++;
         $this->ticksSinceStep++;
@@ -543,6 +545,16 @@ class User
     public function setOldRotation(Vector2 $oldRotation): void
     {
         $this->oldRotation = $oldRotation;
+    }
+
+    public function getTicksSinceDamage(): int
+    {
+        return $this->ticksSinceDamage;
+    }
+
+    public function resetTicksSinceDamage(): void
+    {
+        $this->ticksSinceDamage = 0;
     }
 
 }

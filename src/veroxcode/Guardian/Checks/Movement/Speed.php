@@ -8,6 +8,7 @@ use pocketmine\data\bedrock\EnchantmentIds;
 use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\event\entity\EntityMotionEvent;
 use pocketmine\item\enchantment\VanillaEnchantments;
+use pocketmine\item\ItemTypeIds;
 use pocketmine\math\Facing;
 use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\CorrectPlayerMovePredictionPacket;
@@ -44,7 +45,7 @@ class Speed extends Check
         $player = $user->getPlayer();
         $eligibleGamemode = $player->getGamemode() === GameMode::SURVIVAL() || $player->getGamemode() === GameMode::ADVENTURE();
 
-        if (!$eligibleGamemode || $player->isGliding() || $player->isFlying() || $user->getTicksSinceCorrection() <= 2 || $user->getTicksSinceJoin() < 40){
+        if (!$eligibleGamemode || ($player->isGliding() && $player->getArmorInventory()->getChestplate()->getTypeId() === ItemTypeIds::ELYTRA) || $player->isFlying() || $user->getTicksSinceCorrection() <= 2 || $user->getTicksSinceJoin() < 40){
             return;
         }
 

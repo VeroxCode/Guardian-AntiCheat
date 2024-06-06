@@ -6,12 +6,15 @@
 # Debug
 
 enable-debug: false
-config-version: "1.2.2"
+use-webhook: false
+config-version: "1.5.0"
 prefix: "§f[§eGuardian§f]"
 alert-message-debug: "%PREFIX% §c%PLAYER%§f failed §a%CHECK%§a [§4%VIOLATION%§a]"
 alert-message: "%PREFIX% §c%PLAYER%§f is using §a%CHECK%"
 kick-message: "%PREFIX% §fYou have been Kicked for Cheating!"
 ban-message: "%PREFIX% §fYou have been Banned for Cheating!"
+webhook-url: "INSERT URL HERE"
+webhook-message: "%PLAYER% has been punished for %CHECK%"
 
 # Reach
 
@@ -60,6 +63,14 @@ BadPacketsB-enabled: true
 BadPacketsB-MaxViolations: 5
 BadPacketsB-AlertFrequency: 10
 BadPacketsB-Punishment: "Cancel"
+
+# BadPacketsC
+
+BadPacketsC-notify: true
+BadPacketsC-enabled: true
+BadPacketsC-MaxViolations: 5
+BadPacketsC-AlertFrequency: 10
+BadPacketsC-Punishment: "Cancel"
 
 # ImpossibleRotations
 

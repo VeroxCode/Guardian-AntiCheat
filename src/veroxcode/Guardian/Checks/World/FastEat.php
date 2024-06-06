@@ -53,7 +53,7 @@ class FastEat extends Check
 
         if ($consumedItem instanceof Food && !in_array($consumedItem->getTypeId(), self::IGNORE)){
             $consumeTime = (microtime(true) * 1000) - $user->getCache()["lastUse"];
-            if ($consumeTime < 1600){
+            if ($consumeTime < 1500){
 
                 $cache["lastUse"] = (microtime(true) * 1000) - $player->getNetworkSession()->getPing();
                 $user->setCache($cache);

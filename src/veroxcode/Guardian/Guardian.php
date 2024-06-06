@@ -13,6 +13,7 @@ use veroxcode\Guardian\Listener\EventListener;
 use veroxcode\Guardian\Panel\AdminPanel;
 use veroxcode\Guardian\User\UserManager;
 use veroxcode\Guardian\Utils\Constants;
+use veroxcode\Guardian\Utils\DiscordWebhook;
 
 class Guardian extends PluginBase implements \pocketmine\event\Listener
 {
@@ -33,9 +34,10 @@ class Guardian extends PluginBase implements \pocketmine\event\Listener
         $this->config = new Config($this->getDataFolder() . "SavedConfig.yml", Config::YAML);
 
         foreach ($default->getAll(true) as $key){
-            if ($this->getSavedConfig()->get($key) === null){
+            $data = $this->config->get($key);
+            if ($this->config->get($key) == null || $this->config->get($key) == ""){
                 $this->getServer()->getLogger()->warning("missing $key");
-                $this->getSavedConfig()->set($key, $default->get($key));
+                $this->config->set($key, $default->get($key));
             }
         }
 
@@ -73,9 +75,9 @@ class Guardian extends PluginBase implements \pocketmine\event\Listener
 
                switch ($args[0]){
                    case "help":
-                       $sender->sendMessage(
-                           "$prefix §fhelp §8- Lists all Commands\n 
-                       $prefix §fpanel §8- Opens the Admin Panel\n");
+                       $sender->sendMessage("$prefix §fhelp §8- Lists all Commands");
+                       $sender->sendMessage("$prefix §fpanel §8- Opens the Admin Panel\n");
+                       $sender->sendMessage("$prefix §fwebtest §8- Test your Discord Webhook\n");
 
                        $this->getSavedConfig()->save();
                        return true;
@@ -85,6 +87,12 @@ class Guardian extends PluginBase implements \pocketmine\event\Listener
                                AdminPanel::open($sender);
                                return true;
                            }
+                       }
+                       break;
+                   case "web-test":
+                       if ($sender instanceof Player) {
+                           DiscordWebhook::TestNotification();
+                           return true;
                        }
                        break;
                    default:
@@ -118,6 +126,11 @@ class Guardian extends PluginBase implements \pocketmine\event\Listener
     public function debugEnabled(): bool
     {
         return $this->getSavedConfig()->get("enable-debug");
+    }
+
+    public function WebhookEnabled() : bool
+    {
+        return $this->getSavedConfig()->get("use-webhook");
     }
 
 }
