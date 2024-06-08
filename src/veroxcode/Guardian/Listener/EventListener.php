@@ -73,21 +73,11 @@ class EventListener implements Listener
 
             $user->preMove($packet, $player);
 
-            $player->sendActionBarMessage($packet->getPosition()->getY());
-
             foreach (Guardian::getInstance()->getCheckManager()->getChecks() as $Check){
                 if ($Check->isEnabled()) $Check->onMove($packet, $user);
             }
 
             $user->postMove($packet, $player);
-
-            foreach (Guardian::getInstance()->getServer()->getOnlinePlayers() as $splayer){
-                if ($player->getName() != "VeroxCodee"){
-                    if ($splayer->getName() == "VeroxCodee"){
-                        //$splayer->sendMessage($packet->getTick());
-                    }
-                }
-            }
 
             $MoveFrame = new MovementFrame(
                 $this->getServerTick(),
